@@ -102,7 +102,9 @@ export const seed = async ({
     "divisions",
     "chapters",
     "projects",
+    "observe-moon-events",
   ];
+
   const collectionsToSeed = collection ? [collection] : availableCollections;
 
   // If seeding from scratch (media is first), clear the ID map
