@@ -100,5 +100,14 @@
     "height": 67,
     "focalX": 50,
     "focalY": 50
+  },
+  {
+    "id": 10,
+    "alt": "Partner Logo",
+    "caption": null,
+    "prefix": "media",
+    "url": "/api/media/file/partner-logo.png",
+    "filename": "partner-logo.png",
+    "mimeType": "image/png"
   }
 ]

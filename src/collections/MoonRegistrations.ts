@@ -3,17 +3,19 @@ import type { CollectionConfig } from "payload";
 export const MoonRegistrations: CollectionConfig = {
   slug: "moon-registrations",
   admin: {
+    group: "Observe Moon Night",
     useAsTitle: "fullName",
     defaultColumns: [
       "fullName",
       "email",
       "phone",
-      "institution",
-      "year",
-      "attendanceMode",
+      "selectedLocation",
+      "paymentStatus",
+      "status",
       "createdAt",
     ],
   },
+
   access: {
     create: () => true, // Allow anyone on web to register
     read: ({ req }) => Boolean(req.user),
@@ -43,6 +45,11 @@ export const MoonRegistrations: CollectionConfig = {
       type: "text",
       required: true,
       label: "University / School / Institution",
+    },
+    {
+      name: "selectedLocation",
+      type: "text",
+      label: "Selected Observation Location Site",
     },
     {
       name: "year",
@@ -86,6 +93,24 @@ export const MoonRegistrations: CollectionConfig = {
       label: "Equipment Brought",
     },
     {
+      name: "paymentSlip",
+      type: "upload",
+      relationTo: "media",
+      label: "Payment Slip / Receipt",
+    },
+    {
+      name: "paymentStatus",
+      type: "select",
+      defaultValue: "n/a",
+      options: [
+        { label: "N/A (Free Event)", value: "n/a" },
+        { label: "Pending Verification", value: "pending" },
+        { label: "Payment Verified", value: "verified" },
+        { label: "Payment Rejected", value: "rejected" },
+      ],
+      label: "Payment Verification Status",
+    },
+    {
       name: "notes",
       type: "textarea",
       label: "Additional Notes / Special Requests",
@@ -96,10 +121,10 @@ export const MoonRegistrations: CollectionConfig = {
       defaultValue: "confirmed",
       options: [
         { label: "Confirmed", value: "confirmed" },
-        { label: "Waitlisted", value: "waitlisted" },
+        { label: "Pending Approval", value: "pending" },
         { label: "Cancelled", value: "cancelled" },
       ],
-      label: "Status",
+      label: "Registration Status",
     },
   ],
 };

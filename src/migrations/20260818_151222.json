@@ -8569,6 +8569,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "selected_location": {
+          "name": "selected_location",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
         "year": {
           "name": "year",
           "type": "varchar",
@@ -8598,6 +8604,20 @@
           "primaryKey": false,
           "notNull": false,
           "default": "'observer'"
+        },
+        "payment_slip_id": {
+          "name": "payment_slip_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "payment_status": {
+          "name": "payment_status",
+          "type": "enum_moon_registrations_payment_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'n/a'"
         },
         "notes": {
           "name": "notes",
@@ -8659,6 +8679,21 @@
           "method": "btree",
           "with": {}
         },
+        "moon_registrations_payment_slip_idx": {
+          "name": "moon_registrations_payment_slip_idx",
+          "columns": [
+            {
+              "expression": "payment_slip_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
         "moon_registrations_updated_at_idx": {
           "name": "moon_registrations_updated_at_idx",
           "columns": [
@@ -8690,7 +8725,339 @@
           "with": {}
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "moon_registrations_payment_slip_id_media_id_fk": {
+          "name": "moon_registrations_payment_slip_id_media_id_fk",
+          "tableFrom": "moon_registrations",
+          "tableTo": "media",
+          "columnsFrom": ["payment_slip_id"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.observe_moon_events_agenda": {
+      "name": "observe_moon_events_agenda",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "time": {
+          "name": "time",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "stage": {
+          "name": "stage",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'PHASE 01'"
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "observe_moon_events_agenda_order_idx": {
+          "name": "observe_moon_events_agenda_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "observe_moon_events_agenda_parent_id_idx": {
+          "name": "observe_moon_events_agenda_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "observe_moon_events_agenda_parent_id_fk": {
+          "name": "observe_moon_events_agenda_parent_id_fk",
+          "tableFrom": "observe_moon_events_agenda",
+          "tableTo": "observe_moon_events",
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.observe_moon_events_locations": {
+      "name": "observe_moon_events_locations",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "city": {
+          "name": "city",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "latitude": {
+          "name": "latitude",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "longitude": {
+          "name": "longitude",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_primary": {
+          "name": "is_primary",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        }
+      },
+      "indexes": {
+        "observe_moon_events_locations_order_idx": {
+          "name": "observe_moon_events_locations_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "observe_moon_events_locations_parent_id_idx": {
+          "name": "observe_moon_events_locations_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "observe_moon_events_locations_parent_id_fk": {
+          "name": "observe_moon_events_locations_parent_id_fk",
+          "tableFrom": "observe_moon_events_locations",
+          "tableTo": "observe_moon_events",
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.observe_moon_events_partners": {
+      "name": "observe_moon_events_partners",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "logo_id": {
+          "name": "logo_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "partnership_type": {
+          "name": "partnership_type",
+          "type": "enum_observe_moon_events_partners_partnership_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'Sponsor'"
+        },
+        "website_url": {
+          "name": "website_url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "observe_moon_events_partners_order_idx": {
+          "name": "observe_moon_events_partners_order_idx",
+          "columns": [
+            {
+              "expression": "_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "observe_moon_events_partners_parent_id_idx": {
+          "name": "observe_moon_events_partners_parent_id_idx",
+          "columns": [
+            {
+              "expression": "_parent_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "observe_moon_events_partners_logo_idx": {
+          "name": "observe_moon_events_partners_logo_idx",
+          "columns": [
+            {
+              "expression": "logo_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "observe_moon_events_partners_logo_id_media_id_fk": {
+          "name": "observe_moon_events_partners_logo_id_media_id_fk",
+          "tableFrom": "observe_moon_events_partners",
+          "tableTo": "media",
+          "columnsFrom": ["logo_id"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "observe_moon_events_partners_parent_id_fk": {
+          "name": "observe_moon_events_partners_parent_id_fk",
+          "tableFrom": "observe_moon_events_partners",
+          "tableTo": "observe_moon_events",
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},
@@ -8721,24 +9088,34 @@
         },
         "event_date": {
           "name": "event_date",
-          "type": "varchar",
+          "type": "timestamp(3) with time zone",
           "primaryKey": false,
-          "notNull": false,
-          "default": "'October 24, 2026'"
+          "notNull": false
+        },
+        "start_time": {
+          "name": "start_time",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "end_time": {
+          "name": "end_time",
+          "type": "timestamp(3) with time zone",
+          "primaryKey": false,
+          "notNull": false
         },
         "event_time": {
           "name": "event_time",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": false,
-          "default": "'06:30 PM - 10:30 PM IST'"
+          "notNull": false
         },
         "location": {
           "name": "location",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false,
-          "default": "'Colombo & Chapter Observatories'"
+          "default": "'Galle Face Green, Colombo'"
         },
         "description": {
           "name": "description",
@@ -8749,6 +9126,25 @@
         "hero_image_id": {
           "name": "hero_image_id",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_paid": {
+          "name": "is_paid",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": false
+        },
+        "ticket_price": {
+          "name": "ticket_price",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "payment_details": {
+          "name": "payment_details",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -18420,10 +18816,26 @@
       "schema": "public",
       "values": ["bringing-equipment", "observer", "astrophotography"]
     },
+    "public.enum_moon_registrations_payment_status": {
+      "name": "enum_moon_registrations_payment_status",
+      "schema": "public",
+      "values": ["n/a", "pending", "verified", "rejected"]
+    },
     "public.enum_moon_registrations_status": {
       "name": "enum_moon_registrations_status",
       "schema": "public",
-      "values": ["confirmed", "waitlisted", "cancelled"]
+      "values": ["confirmed", "pending", "cancelled"]
+    },
+    "public.enum_observe_moon_events_partners_partnership_type": {
+      "name": "enum_observe_moon_events_partners_partnership_type",
+      "schema": "public",
+      "values": [
+        "Sponsor",
+        "Global Partner",
+        "Academic Partner",
+        "Media Partner",
+        "Equipment Partner"
+      ]
     },
     "public.enum_observe_moon_events_status": {
       "name": "enum_observe_moon_events_status",
@@ -18680,6 +19092,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "c4d5ff2e-7415-497e-840c-404fa4f11819",
+  "id": "266376d3-c8e0-4508-b470-3eb368940543",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

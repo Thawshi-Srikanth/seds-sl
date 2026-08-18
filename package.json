@@ -14,8 +14,11 @@
     "payload": "cross-env payload",
     "db:migrate": "cross-env payload migrate",
     "db:create-migration": "cross-env payload migrate:create",
-    "db:status": "cross-env payload migrate:status"
+    "db:status": "cross-env payload migrate:status",
+    "generate:importmap": "cross-env payload generate:importmap",
+    "seed": "bun run src/endpoints/seed/run.ts"
   },
+
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@payloadcms/admin-bar": "^3.68.5",
@@ -45,6 +48,7 @@
     "@react-email/render": "^1.4.0",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.4.2",
+    "@types/leaflet": "^1.9.22",
     "@types/three": "^0.180.0",
     "animejs": "^4.2.2",
     "class-variance-authority": "^0.7.1",
@@ -56,6 +60,7 @@
     "embla-carousel-react": "^8.6.0",
     "graphql": "^16.12.0",
     "gray-matter": "^4.0.3",
+    "leaflet": "^1.9.4",
     "lucide-react": "^0.544.0",
     "motion": "^12.23.26",
     "next": "16.0.10",

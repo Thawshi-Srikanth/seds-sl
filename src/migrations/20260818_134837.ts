@@ -1,4 +1,4 @@
-import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
+import { MigrateUpArgs, MigrateDownArgs, sql } from "@payloadcms/db-postgres";
 
 export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
@@ -50,10 +50,14 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_moon_registrations_fk" FOREIGN KEY ("moon_registrations_id") REFERENCES "public"."moon_registrations"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_observe_moon_events_fk" FOREIGN KEY ("observe_moon_events_id") REFERENCES "public"."observe_moon_events"("id") ON DELETE cascade ON UPDATE no action;
   CREATE INDEX "payload_locked_documents_rels_moon_registrations_id_idx" ON "payload_locked_documents_rels" USING btree ("moon_registrations_id");
-  CREATE INDEX "payload_locked_documents_rels_observe_moon_events_id_idx" ON "payload_locked_documents_rels" USING btree ("observe_moon_events_id");`)
+  CREATE INDEX "payload_locked_documents_rels_observe_moon_events_id_idx" ON "payload_locked_documents_rels" USING btree ("observe_moon_events_id");`);
 }
 
-export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
+export async function down({
+  db,
+  payload,
+  req,
+}: MigrateDownArgs): Promise<void> {
   await db.execute(sql`
    ALTER TABLE "moon_registrations" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "observe_moon_events" DISABLE ROW LEVEL SECURITY;
@@ -70,5 +74,5 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TYPE "public"."enum_moon_registrations_attendance_mode";
   DROP TYPE "public"."enum_moon_registrations_equipment";
   DROP TYPE "public"."enum_moon_registrations_status";
-  DROP TYPE "public"."enum_observe_moon_events_status";`)
+  DROP TYPE "public"."enum_observe_moon_events_status";`);
 }
