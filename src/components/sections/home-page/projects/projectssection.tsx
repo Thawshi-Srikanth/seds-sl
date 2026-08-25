@@ -1,10 +1,10 @@
 "use client";
 
-import { Calendar, ArrowRight } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SectionHeader } from "@/components/sections/section-header";
 import Link from "next/link";
-import type { Project } from "@/payload-types";
+import { fetchProjects, type UnifiedProjectItem } from "@/actions/projects";
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 
@@ -12,9 +12,11 @@ const ProjectCard = ({
   project,
   index,
 }: {
-  project: Project;
+  project: UnifiedProjectItem;
   index: number;
 }) => {
+  const targetLink = project.customLink || `/projects/${project.slug}`;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -24,16 +26,19 @@ const ProjectCard = ({
       className="p-6 md:p-8 bg-background group flex flex-col h-full"
     >
       <div className="flex flex-col h-full">
+        {project.badgeLabel && (
+          <div className="mb-2 text-[10px] font-mono font-bold uppercase text-primary tracking-wider">
+            {project.badgeLabel}
+          </div>
+        )}
+
         <h3 className="text-xl font-bold mb-3 text-foreground transition-colors group-hover:text-primary">
           {project.name}
         </h3>
 
-        {project.chapter && (
+        {project.chapterName && (
           <div className="text-sm text-muted-foreground mb-2 font-mono">
-            Chapter:{" "}
-            {typeof project.chapter === "object"
-              ? project.chapter.name
-              : project.chapter}
+            {project.chapterName}
           </div>
         )}
 
@@ -47,10 +52,16 @@ const ProjectCard = ({
         <div className="flex items-center justify-between mt-auto">
           <div className="flex items-center gap-2 text-muted-foreground font-mono text-xs">
             <Calendar className="size-3.5" />
-            <span>{new Date(project.createdAt).toLocaleDateString()}</span>
+            <span>
+              {new Date(project.createdAt).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </span>
           </div>
 
-          <Link href={`/projects/${project.slug}`}>
+          <Link href={targetLink}>
             <Button variant="outline" size="sm" bleed={true}>
               Know More
             </Button>
@@ -61,27 +72,27 @@ const ProjectCard = ({
   );
 };
 
-const ProjectsSection = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
+export function ProjectsSection() {
+  const [projects, setProjects] = useState<UnifiedProjectItem[]>([]);
 
   useEffect(() => {
-    fetch("/api/projects?limit=3&depth=1&sort=-createdAt")
-      .then((res) => res.json())
-      .then((data) => setProjects(data.docs || []))
+    fetchProjects()
+      .then((data) => setProjects(data.slice(0, 3)))
       .catch(console.error);
   }, []);
 
   return (
     <section className="light-mode-section relative w-full pt-8 md:pt-12 lg:pt-16">
-      <div className="section-background bg-background dark:bg-black"></div>
+      <div className="section-background bg-background dark:bg-black" />
       <div className="grid-container section-content">
         <div className="col-span-4 md:col-span-8 lg:col-span-12">
           <SectionHeader
-            title="Ongoing Local Projects"
+            title="Ongoing Local Projects & Flagship Initiatives"
             description={
               <>
-                Here are our ongoing local projects by SEDS Sri Lanka that
-                showcase the organization's commitment to advancing space <br />
+                Here are our ongoing local projects and flagship space
+                initiatives by SEDS Sri Lanka that showcase the organization's
+                commitment to advancing space <br />
                 exploration and technology:
               </>
             }
@@ -119,10 +130,13 @@ const ProjectsSection = () => {
                     <h3 className="text-xl font-bold mb-4 text-foreground">
                       Explore More Projects
                     </h3>
-                    <div className="flex items-center gap-2 text-primary">
-                      <span className="font-medium">View All Projects</span>
-                      <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
-                    </div>
+                    <p className="text-sm text-muted-foreground mb-6 max-w-xs">
+                      Discover all student chapter projects, rovers, and
+                      flagship space missions across Sri Lanka.
+                    </p>
+                    <Button variant="default" size="sm" bleed={true}>
+                      View All Projects
+                    </Button>
                   </div>
                 </Link>
               </motion.div>
@@ -132,6 +146,6 @@ const ProjectsSection = () => {
       </div>
     </section>
   );
-};
+}
 
 export default ProjectsSection;

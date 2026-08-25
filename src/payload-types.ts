@@ -1102,6 +1102,14 @@ export interface Project {
    */
   chapter?: (number | null) | Chapter;
   description: string;
+  /**
+   * Check to display this project in the Featured spotlight banner at top of Projects page
+   */
+  isFeatured?: boolean | null;
+  /**
+   * e.g. /projects/observe-the-moon-night. Leave empty to use default project page.
+   */
+  customLink?: string | null;
   hero: {
     type: "none" | "highImpact" | "mediumImpact" | "lowImpact";
     richText?: {
@@ -1330,7 +1338,13 @@ export interface ObserveMoonEvent {
   startTime?: string | null;
   endTime?: string | null;
   description?: string | null;
+  shortDescription?: string | null;
   heroImage?: (number | null) | Media;
+  listingImage?: (number | null) | Media;
+  /**
+   * Check to display this flagship event in the Featured spotlight banner on Projects page
+   */
+  isFeatured?: boolean | null;
   isPaid?: boolean | null;
   ticketPrice?: string | null;
   paymentDetails?: string | null;
@@ -1723,6 +1737,8 @@ export interface ProjectsSelect<T extends boolean = true> {
   image?: T;
   chapter?: T;
   description?: T;
+  isFeatured?: T;
+  customLink?: T;
   hero?:
     | T
     | {
@@ -2055,7 +2071,10 @@ export interface ObserveMoonEventsSelect<T extends boolean = true> {
   startTime?: T;
   endTime?: T;
   description?: T;
+  shortDescription?: T;
   heroImage?: T;
+  listingImage?: T;
+  isFeatured?: T;
   isPaid?: T;
   ticketPrice?: T;
   paymentDetails?: T;

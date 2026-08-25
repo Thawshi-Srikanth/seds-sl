@@ -3,8 +3,9 @@ import type { CollectionConfig } from "payload";
 export const ObserveMoonEvents: CollectionConfig = {
   slug: "observe-moon-events",
   admin: {
-    group: "Observe Moon Night",
+    group: "Projects & Initiatives",
     useAsTitle: "title",
+
     defaultColumns: [
       "title",
       "year",
@@ -86,11 +87,33 @@ export const ObserveMoonEvents: CollectionConfig = {
       label: "Event Description",
     },
     {
+      name: "shortDescription",
+      type: "textarea",
+      label: "Short Description for Project Listing Card",
+    },
+    {
       name: "heroImage",
       type: "upload",
       relationTo: "media",
       label: "Hero / Header Image",
     },
+    {
+      name: "listingImage",
+      type: "upload",
+      relationTo: "media",
+      label: "Listing Thumbnail Image for Projects Page",
+    },
+    {
+      name: "isFeatured",
+      type: "checkbox",
+      defaultValue: true,
+      label: "Feature on Projects Page",
+      admin: {
+        description:
+          "Check to display this flagship event in the Featured spotlight banner on Projects page",
+      },
+    },
+
     {
       name: "isPaid",
       type: "checkbox",

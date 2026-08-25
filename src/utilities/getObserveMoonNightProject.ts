@@ -9,12 +9,16 @@ export interface ObserveMoonEventResult {
   startTime?: string;
   endTime?: string;
   description?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   heroImage?: any;
   isPaid?: boolean;
   ticketPrice?: string;
   paymentDetails?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   agenda?: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   locations?: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   partners?: any[];
   status: string;
   slug: string;
@@ -30,7 +34,7 @@ export async function getObserveMoonNightProject(
       const yearMatch = slugParam.match(/\d{4}/);
       const searchYear = yearMatch ? yearMatch[0] : slugParam;
 
-      // 1. Query observe-moon-events collection by year or exact match
+      // 1. Query observe-moon-events collection by year
       const yearResult = await payload.find({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         collection: "observe-moon-events" as any,
@@ -71,7 +75,7 @@ export async function getObserveMoonNightProject(
           locations: doc.locations || [],
           partners: doc.partners || [],
           status: doc.status,
-          slug: `observe-the-moon-night-${doc.year}`,
+          slug: `observe-the-moon-night/${doc.year}`,
         };
       }
 
@@ -110,7 +114,7 @@ export async function getObserveMoonNightProject(
         locations: doc.locations || [],
         partners: doc.partners || [],
         status: doc.status,
-        slug: `observe-the-moon-night-${doc.year}`,
+        slug: `observe-the-moon-night/${doc.year}`,
       };
     }
 

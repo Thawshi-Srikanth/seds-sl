@@ -1,32 +1,32 @@
 "use client";
 
-import type { Project } from "@/payload-types";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, X, SearchX, Calendar } from "lucide-react";
+import {
+  Search,
+  X,
+  SearchX,
+  Calendar,
+  Sparkles,
+  ArrowRight,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
-import { fetchProjects } from "@/actions/projects";
+import { fetchProjects, type UnifiedProjectItem } from "@/actions/projects";
 import { SectionHeader } from "@/components/sections/section-header";
 
 export default function ProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<UnifiedProjectItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
   const [loading, setLoading] = useState(true);
 
-  const getMediaUrl = (media: Project["image"]): string => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getMediaUrl = (media: any): string => {
     if (typeof media === "object" && media !== null && "url" in media) {
       if (media.url) return media.url;
-    }
-    return "";
-  };
-
-  const getChapterName = (chapter: Project["chapter"]): string => {
-    if (typeof chapter === "object" && chapter !== null && "name" in chapter) {
-      return chapter.name || "";
     }
     return "";
   };
@@ -47,18 +47,21 @@ export default function ProjectsPage() {
     getProjects();
   }, [debouncedSearchQuery]);
 
+  const featuredProjects = projects.filter((p) => p.isFeatured);
+  const regularProjects = projects.filter((p) => !p.isFeatured);
+
   return (
     <div className="flex flex-col w-full pt-8 md:pt-12 lg:pt-16">
       <div className="grid-container section-content">
-        <div className="col-span-4 md:col-span-8 lg:col-span-12">
+        <div className="col-span-4 md:col-span-8 lg:col-span-12 space-y-12">
           <SectionHeader
-            title="Our Projects"
-            description="Discover the innovative projects developed by our student chapters, ranging from rocketry to rovers and satellite technology."
+            title="Our Projects & Flagship Events"
+            description="Discover the innovative projects developed by our student chapters alongside flagship space exploration initiatives."
             image="/section-header/space-projects-bg.jpeg"
           />
 
           {/* High-Tech Hairline Bleeding Search Bar */}
-          <div className="max-w-xl mx-auto my-10 relative">
+          <div className="max-w-xl mx-auto my-6 relative">
             <div className="absolute -left-4 -right-4 top-0 border-t border-border/60 pointer-events-none" />
             <div className="absolute -left-4 -right-4 bottom-0 border-b border-border/60 pointer-events-none" />
             <div className="absolute -top-4 -bottom-4 left-0 border-l border-border/60 pointer-events-none" />
@@ -68,7 +71,7 @@ export default function ProjectsPage() {
               <Search className="size-4 text-muted-foreground shrink-0" />
               <Input
                 type="text"
-                placeholder="Search projects..."
+                placeholder="Search projects and events..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-transparent border-0 px-0 py-1 text-foreground placeholder:text-muted-foreground/50 h-9"
@@ -88,95 +91,202 @@ export default function ProjectsPage() {
             </div>
           </div>
 
-          {/* High-Tech Bleeding Grid Layout */}
-          <div className="relative my-6">
-            {/* Extended Horizontal Bleed Lines */}
-            <div className="absolute -left-6 -right-6 top-0 border-t border-border/60 pointer-events-none" />
-            <div className="absolute -left-6 -right-6 bottom-0 border-b border-border/60 pointer-events-none" />
-
-            {/* Extended Vertical Bleed Lines */}
-            <div className="absolute -top-6 -bottom-6 left-0 border-l border-border/60 pointer-events-none" />
-            <div className="absolute -top-6 -bottom-6 right-0 border-r border-border/60 pointer-events-none" />
-
-            {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border border-border/60 divide-y divide-border/60 md:divide-y-0 bg-background relative z-0">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div
-                    key={i}
-                    className="p-6 border-b md:border-b-0 border-r border-border/60 animate-pulse space-y-4"
-                  >
-                    <div className="w-full aspect-video bg-muted/50 border border-border/50" />
-                    <div className="h-6 bg-muted/50 rounded w-2/3" />
-                    <div className="h-4 bg-muted/50 rounded w-full" />
-                  </div>
-                ))}
+          {/* FEATURED PROJECTS & FLAGSHIP EVENTS SPOTLIGHT */}
+          {!loading && featuredProjects.length > 0 && (
+            <div className="space-y-6 pt-4">
+              <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase text-primary tracking-widest">
+                <Sparkles className="size-4 text-primary animate-pulse" />
+                <span>FEATURED PROJECTS & SPECIAL INITIATIVES</span>
               </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border border-border/60 divide-y divide-border/60 bg-background relative z-0">
-                {projects.map((project) => (
-                  <div
-                    key={project.id}
-                    className="p-6 bg-background group flex flex-col h-full border-r border-border/60 last:border-r-0"
-                  >
-                    {/* Image Container */}
-                    <div className="w-full aspect-video bg-muted border border-border/50 mb-4 relative overflow-hidden flex items-center justify-center">
-                      {project.image ? (
-                        <Image
-                          src={getMediaUrl(project.image)}
-                          alt={project.name}
-                          fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="text-muted-foreground text-sm font-medium">
-                          No Image
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {featuredProjects.map((item) => {
+                  const mediaUrl = getMediaUrl(item.image);
+                  const targetLink =
+                    item.customLink || `/projects/${item.slug}`;
+
+                  return (
+                    <div
+                      key={item.id}
+                      className="relative group border border-border/60 bg-background/90 backdrop-blur-md p-6 md:p-8 flex flex-col justify-between space-y-6"
+                    >
+                      {/* Bleeding Hairline Frame */}
+                      <div className="absolute -left-3 -right-3 top-0 border-t border-border/60 pointer-events-none" />
+                      <div className="absolute -left-3 -right-3 bottom-0 border-b border-border/60 pointer-events-none" />
+                      <div className="absolute -top-3 -bottom-3 left-0 border-l border-border/60 pointer-events-none" />
+                      <div className="absolute -top-3 -bottom-3 right-0 border-r border-border/60 pointer-events-none" />
+
+                      <div className="space-y-4">
+                        {/* Image Preview Container */}
+                        <div className="w-full aspect-video bg-muted border border-border/50 relative overflow-hidden flex items-center justify-center">
+                          {mediaUrl ? (
+                            <Image
+                              src={mediaUrl}
+                              alt={item.name}
+                              fill
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                          ) : (
+                            <div className="text-muted-foreground text-xs font-mono">
+                              SEDS Sri Lanka Initiative
+                            </div>
+                          )}
+                          <div className="absolute top-3 left-3 bg-background/90 backdrop-blur-md border border-border/60 px-2.5 py-1 text-[10px] font-mono font-bold uppercase text-primary tracking-wider">
+                            {item.badgeLabel || "FEATURED"}
+                          </div>
                         </div>
-                      )}
-                    </div>
 
-                    <h3 className="text-xl font-bold mb-3 text-foreground transition-colors group-hover:text-primary line-clamp-2">
-                      {project.name}
-                    </h3>
-
-                    {project.chapter && (
-                      <div className="text-sm text-muted-foreground mb-2 font-mono">
-                        Chapter: {getChapterName(project.chapter)}
-                      </div>
-                    )}
-
-                    <p className="text-sm leading-relaxed mb-4 text-muted-foreground flex-1 line-clamp-3">
-                      {project.description}
-                    </p>
-
-                    {/* Footer area inside card */}
-                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-border/50">
-                      <div className="flex items-center gap-2 text-muted-foreground font-mono text-xs">
-                        <Calendar className="size-3.5" />
-                        <span>
-                          {new Date(project.createdAt).toLocaleDateString()}
-                        </span>
+                        <div className="space-y-2">
+                          <h3 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors font-mono">
+                            {item.name}
+                          </h3>
+                          {item.chapterName && (
+                            <div className="text-xs font-mono text-muted-foreground">
+                              {item.chapterName}
+                            </div>
+                          )}
+                          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                            {item.description}
+                          </p>
+                        </div>
                       </div>
 
-                      <Link href={`/projects/${project.slug}`}>
-                        <Button variant="outline" size="sm" bleed={true}>
-                          Know More
-                        </Button>
-                      </Link>
+                      <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                        <div className="flex items-center gap-2 text-muted-foreground font-mono text-xs">
+                          <Calendar className="size-3.5 text-primary" />
+                          <span>
+                            {new Date(item.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              },
+                            )}
+                          </span>
+                        </div>
+
+                        <Link href={targetLink}>
+                          <Button variant="default" size="sm" bleed={true}>
+                            <span>View Initiative</span>
+                            <ArrowRight className="size-3.5 ml-1" />
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
-            )}
+            </div>
+          )}
+
+          {/* ALL PROJECTS GRID SECTION */}
+          <div className="space-y-6 pt-6">
+            {!loading &&
+              featuredProjects.length > 0 &&
+              regularProjects.length > 0 && (
+                <div className="text-xs font-mono font-bold uppercase text-muted-foreground tracking-widest">
+                  ALL OTHER PROJECTS & MISSIONS
+                </div>
+              )}
+
+            {/* High-Tech Bleeding Grid Layout */}
+            <div className="relative">
+              {/* Extended Horizontal Bleed Lines */}
+              <div className="absolute -left-6 -right-6 top-0 border-t border-border/60 pointer-events-none" />
+              <div className="absolute -left-6 -right-6 bottom-0 border-b border-border/60 pointer-events-none" />
+              <div className="absolute -top-6 -bottom-6 left-0 border-l border-border/60 pointer-events-none" />
+              <div className="absolute -top-6 -bottom-6 right-0 border-r border-border/60 pointer-events-none" />
+
+              {loading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border border-border/60 divide-y divide-border/60 md:divide-y-0 bg-background relative z-0">
+                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <div
+                      key={i}
+                      className="p-6 border-b md:border-b-0 border-r border-border/60 animate-pulse space-y-4"
+                    >
+                      <div className="w-full aspect-video bg-muted/50 border border-border/50" />
+                      <div className="h-6 bg-muted/50 rounded w-2/3" />
+                      <div className="h-4 bg-muted/50 rounded w-full" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 border border-border/60 divide-y divide-border/60 bg-background relative z-0">
+                  {(regularProjects.length > 0
+                    ? regularProjects
+                    : projects
+                  ).map((item) => {
+                    const mediaUrl = getMediaUrl(item.image);
+                    const targetLink =
+                      item.customLink || `/projects/${item.slug}`;
+
+                    return (
+                      <div
+                        key={item.id}
+                        className="p-6 bg-background group flex flex-col h-full border-r border-border/60 last:border-r-0"
+                      >
+                        {/* Image Container */}
+                        <div className="w-full aspect-video bg-muted border border-border/50 mb-4 relative overflow-hidden flex items-center justify-center">
+                          {mediaUrl ? (
+                            <Image
+                              src={mediaUrl}
+                              alt={item.name}
+                              fill
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                          ) : (
+                            <div className="text-muted-foreground text-xs font-mono">
+                              No Image
+                            </div>
+                          )}
+                        </div>
+
+                        <h3 className="text-xl font-bold mb-2 text-foreground transition-colors group-hover:text-primary line-clamp-2">
+                          {item.name}
+                        </h3>
+
+                        {item.chapterName && (
+                          <div className="text-xs text-muted-foreground mb-3 font-mono">
+                            {item.chapterName}
+                          </div>
+                        )}
+
+                        <p className="text-sm leading-relaxed mb-4 text-muted-foreground flex-1 line-clamp-3">
+                          {item.description}
+                        </p>
+
+                        {/* Footer area inside card */}
+                        <div className="flex items-center justify-between mt-auto pt-4 border-t border-border/50">
+                          <div className="flex items-center gap-2 text-muted-foreground font-mono text-xs">
+                            <Calendar className="size-3.5" />
+                            <span>
+                              {new Date(item.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
+
+                          <Link href={targetLink}>
+                            <Button variant="outline" size="sm" bleed={true}>
+                              Know More
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* No Results */}
           {!loading && projects.length === 0 && (
-            <div className="text-center mt-12 py-12 px-4 bg-background border border-border/60 border-dashed max-w-2xl mx-auto">
+            <div className="text-center my-12 py-12 px-4 bg-background border border-border/60 border-dashed max-w-2xl mx-auto">
               <div className="bg-muted/30 w-16 h-16 flex items-center justify-center mx-auto mb-4 border border-border/60">
                 <SearchX className="w-8 h-8 text-muted-foreground" />
               </div>
               <h3 className="text-xl font-semibold mb-2 text-foreground">
-                No projects found
+                No projects or events found
               </h3>
               <p className="text-muted-foreground text-sm">
                 We couldn't find any projects matching "{searchQuery}". Try
