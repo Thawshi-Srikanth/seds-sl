@@ -199,7 +199,7 @@ export const seed = async ({
           req,
           data: docData,
           ...(fileData ? { file: fileData } : {}),
-        });
+        } as any);
 
         // Map old ID to new ID
         idMap[coll][oldId] = created.id;

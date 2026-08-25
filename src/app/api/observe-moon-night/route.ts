@@ -11,8 +11,9 @@ export async function POST(req: Request) {
     let institution = "";
     let year = "2026";
     let eventSlug = "observe-the-moon-night-2026";
-    let attendanceMode = "in-person";
-    let equipment = "observer";
+    let attendanceMode: "in-person" | "virtual" | "watch-party" = "in-person";
+    let equipment: "bringing-equipment" | "observer" | "astrophotography" =
+      "observer";
     let selectedLocation = "";
     let notes = "";
     let paymentSlipMediaId: string | number | null = null;
@@ -29,9 +30,12 @@ export async function POST(req: Request) {
       year = (formData.get("year") as string) || "2026";
       eventSlug =
         (formData.get("eventSlug") as string) || "observe-the-moon-night-2026";
-      attendanceMode =
-        (formData.get("attendanceMode") as string) || "in-person";
-      equipment = (formData.get("equipment") as string) || "observer";
+      attendanceMode = ((formData.get("attendanceMode") as string) ||
+        "in-person") as "in-person" | "virtual" | "watch-party";
+      equipment = ((formData.get("equipment") as string) || "observer") as
+        | "bringing-equipment"
+        | "observer"
+        | "astrophotography";
       selectedLocation = (formData.get("selectedLocation") as string) || "";
       notes = (formData.get("notes") as string) || "";
       isPaidEvent = formData.get("isPaid") === "true";
@@ -61,8 +65,14 @@ export async function POST(req: Request) {
       institution = body.institution || "";
       year = body.year || "2026";
       eventSlug = body.eventSlug || "observe-the-moon-night-2026";
-      attendanceMode = body.attendanceMode || "in-person";
-      equipment = body.equipment || "observer";
+      attendanceMode = (body.attendanceMode || "in-person") as
+        | "in-person"
+        | "virtual"
+        | "watch-party";
+      equipment = (body.equipment || "observer") as
+        | "bringing-equipment"
+        | "observer"
+        | "astrophotography";
       selectedLocation = body.selectedLocation || "";
       notes = body.notes || "";
       isPaidEvent = Boolean(body.isPaid);

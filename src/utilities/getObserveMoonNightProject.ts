@@ -8,6 +8,8 @@ export interface ObserveMoonEventResult {
   eventDate?: string;
   startTime?: string;
   endTime?: string;
+  eventTime?: string;
+  location?: string;
   description?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   heroImage?: any;
@@ -69,6 +71,12 @@ export async function getObserveMoonNightProject(
           eventDate: doc.eventDate,
           startTime: doc.startTime,
           endTime: doc.endTime,
+          eventTime:
+            doc.eventTime ||
+            (doc.startTime
+              ? `${doc.startTime}${doc.endTime ? ` - ${doc.endTime}` : ""}`
+              : undefined),
+          location: doc.location,
           description: doc.description,
           heroImage: doc.heroImage,
           isPaid: doc.isPaid || false,
@@ -111,6 +119,12 @@ export async function getObserveMoonNightProject(
         eventDate: doc.eventDate,
         startTime: doc.startTime,
         endTime: doc.endTime,
+        eventTime:
+          doc.eventTime ||
+          (doc.startTime
+            ? `${doc.startTime}${doc.endTime ? ` - ${doc.endTime}` : ""}`
+            : undefined),
+        location: doc.location,
         description: doc.description,
         heroImage: doc.heroImage,
         isPaid: doc.isPaid || false,

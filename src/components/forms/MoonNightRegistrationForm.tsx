@@ -40,9 +40,7 @@ const registrationSchema = z.object({
   equipment: z.string().default("observer"),
   notes: z.string().optional(),
   termsAccepted: z.literal(true, {
-    errorMap: () => ({
-      message: "You must accept the safety guidelines to register",
-    }),
+    message: "You must accept the safety guidelines to register",
   }),
 });
 
@@ -50,6 +48,7 @@ type RegistrationFormData = z.infer<typeof registrationSchema>;
 
 interface MoonNightRegistrationFormProps {
   year?: string;
+  eventSlug?: string;
   eventData?: ObserveMoonEventResult;
 }
 
@@ -449,9 +448,9 @@ export function MoonNightRegistrationForm({
             <div className="flex items-start gap-3">
               <Checkbox
                 id="termsAccepted"
-                checked={watch("termsAccepted") || false}
+                checked={Boolean(watch("termsAccepted"))}
                 onCheckedChange={(checked) =>
-                  setValue("termsAccepted", checked === true)
+                  setValue("termsAccepted", (checked === true) as true)
                 }
                 className="mt-0.5 border-slate-400 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white"
               />
