@@ -292,9 +292,14 @@ export const ObserveMoonEvents: CollectionConfig = {
       defaultValue: "published",
       options: [
         { label: "Published", value: "published" },
-        { label: "Draft", value: "draft" },
+        { label: "Unpublished / Draft", value: "draft" },
+        { label: "Unpublished", value: "unpublished" },
       ],
-      label: "Status",
+      label: "Publication Status",
+      admin: {
+        description:
+          "Only 'Published' events appear publicly on the Projects listing page and event URL routes.",
+      },
     },
   ],
 };
