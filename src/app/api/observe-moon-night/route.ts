@@ -1,6 +1,16 @@
 import { NextResponse } from "next/server";
 import { getPayload } from "payload";
 import configPromise from "@payload-config";
+import { generateRegistrationEmail } from "@/utilities/generateRegistrationEmail";
+
+function generateRegistrationCode(year: string): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let randomStr = "";
+  for (let i = 0; i < 4; i++) {
+    randomStr += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return `IOTMN-${year}-${randomStr}`;
+}
 
 export async function POST(req: Request) {
   try {
@@ -85,9 +95,12 @@ export async function POST(req: Request) {
       );
     }
 
+    const registrationCode = generateRegistrationCode(year);
+
     const registration = await payload.create({
       collection: "moon-registrations",
       data: {
+        registrationCode,
         fullName,
         email,
         phone,
@@ -108,13 +121,88 @@ export async function POST(req: Request) {
       },
     });
 
+    // Fetch custom email subject and message from the Observe Moon Event CMS collection for this year
+    let cmsSubject: string | undefined;
+    let cmsCustomMessage: string | undefined;
+    let eventDate: string | undefined;
+    let eventTime: string | undefined;
+    let ticketPrice: string | undefined;
+    let paymentDetails: string | undefined;
+    let agenda: any[] | undefined;
+    try {
+      const eventQuery = await payload.find({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        collection: "observe-moon-events" as any,
+        where: {
+          year: {
+            equals: year,
+          },
+        },
+        limit: 1,
+      });
+
+      if (eventQuery.docs[0]) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const eventDoc = eventQuery.docs[0] as any;
+        cmsSubject = eventDoc.confirmationEmailSubject || undefined;
+        cmsCustomMessage = eventDoc.confirmationEmailBody || undefined;
+        eventDate = eventDoc.eventDate || undefined;
+        eventTime = eventDoc.startTime
+          ? `${eventDoc.startTime}${eventDoc.endTime ? ` - ${eventDoc.endTime}` : ""}`
+          : undefined;
+        ticketPrice = eventDoc.ticketPrice || undefined;
+        paymentDetails = eventDoc.paymentDetails || undefined;
+        agenda = eventDoc.agenda || undefined;
+      }
+    } catch (cmsErr) {
+      console.warn(
+        "Could not fetch event CMS email template settings:",
+        cmsErr,
+      );
+    }
+
+    // Send confirmation email via Payload Resend Adapter (non-blocking for registration creation)
+    try {
+      const { subject, html, text } = generateRegistrationEmail({
+        fullName,
+        email,
+        institution,
+        selectedLocation,
+        attendanceMode,
+        equipment,
+        year,
+        isPaidEvent,
+        registrationId: registrationCode,
+        cmsSubject,
+        cmsCustomMessage,
+        eventDate,
+        eventTime,
+        ticketPrice,
+        paymentDetails,
+        agenda,
+      });
+
+      await payload.sendEmail({
+        to: email,
+        subject,
+        html,
+        text,
+      });
+    } catch (emailErr) {
+      console.error(
+        "Failed to send registration confirmation email:",
+        emailErr,
+      );
+    }
+
     return NextResponse.json(
       {
         success: true,
         message: isPaidEvent
           ? "Registration submitted! Payment slip received and pending verification."
           : "Successfully registered for Observe the Moon Night!",
-        registrationId: registration.id,
+        registrationId: registrationCode,
+        registrationCode,
       },
       { status: 201 },
     );

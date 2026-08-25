@@ -58,6 +58,7 @@ export function MoonNightRegistrationForm({
 }: MoonNightRegistrationFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [passCode, setPassCode] = useState<string | null>(null);
   const [paymentFile, setPaymentFile] = useState<File | null>(null);
 
   const isPaidEvent = Boolean(eventData?.isPaid);
@@ -119,6 +120,10 @@ export function MoonNightRegistrationForm({
         throw new Error(resData.error || "Registration failed");
       }
 
+      if (resData.registrationCode || resData.registrationId) {
+        setPassCode(resData.registrationCode || resData.registrationId);
+      }
+
       setIsSubmitted(true);
       toast.success(
         "Registration successful! Confirmation details have been logged.",
@@ -144,10 +149,15 @@ export function MoonNightRegistrationForm({
           <div className="inline-flex p-4 rounded-full bg-blue-50 border border-blue-200 text-blue-600">
             <CheckCircle2 className="size-12" />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             <h3 className="text-2xl font-bold font-mono uppercase text-slate-900">
               Registration Submitted!
             </h3>
+            {passCode && (
+              <div className="inline-block px-3 py-1 bg-slate-900 text-blue-400 font-mono text-xs font-bold uppercase tracking-wider border border-slate-700">
+                PASS CODE: {passCode}
+              </div>
+            )}
             <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
               {isPaidEvent
                 ? "Your registration and payment receipt have been received. Our team will verify your payment and send a confirmation email."

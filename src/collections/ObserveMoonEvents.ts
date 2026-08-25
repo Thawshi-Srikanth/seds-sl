@@ -269,6 +269,24 @@ export const ObserveMoonEvents: CollectionConfig = {
       },
     },
     {
+      name: "confirmationEmailSubject",
+      type: "text",
+      label: "Registration Confirmation Email Subject",
+      admin: {
+        description:
+          "Custom email subject for registration confirmation (e.g. Registration Confirmed: International Observe the Moon Night 2026)",
+      },
+    },
+    {
+      name: "confirmationEmailBody",
+      type: "textarea",
+      label: "Registration Confirmation Email Custom Message",
+      admin: {
+        description:
+          "Custom welcome message and event instructions included in the confirmation email sent to registrants for this year.",
+      },
+    },
+    {
       name: "status",
       type: "select",
       defaultValue: "published",

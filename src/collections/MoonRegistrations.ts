@@ -4,8 +4,9 @@ export const MoonRegistrations: CollectionConfig = {
   slug: "moon-registrations",
   admin: {
     group: "Observe Moon Night",
-    useAsTitle: "fullName",
+    useAsTitle: "registrationCode",
     defaultColumns: [
+      "registrationCode",
       "fullName",
       "email",
       "phone",
@@ -23,6 +24,13 @@ export const MoonRegistrations: CollectionConfig = {
     delete: ({ req }) => Boolean(req.user),
   },
   fields: [
+    {
+      name: "registrationCode",
+      type: "text",
+      unique: true,
+      index: true,
+      label: "Registration Pass Code (e.g. IOTMN-2026-X8K9)",
+    },
     {
       name: "fullName",
       type: "text",

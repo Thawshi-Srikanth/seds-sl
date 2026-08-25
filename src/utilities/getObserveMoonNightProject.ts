@@ -25,6 +25,8 @@ export interface ObserveMoonEventResult {
   feedbackUrl?: string;
   isFeedbackActive?: boolean;
   feedbackFormHeight?: string;
+  confirmationEmailSubject?: string;
+  confirmationEmailBody?: string;
   status: string;
   slug: string;
 }
@@ -88,6 +90,8 @@ export async function getObserveMoonNightProject(
           feedbackUrl: doc.feedbackUrl || "",
           isFeedbackActive: doc.isFeedbackActive ?? true,
           feedbackFormHeight: doc.feedbackFormHeight || "1850",
+          confirmationEmailSubject: doc.confirmationEmailSubject || undefined,
+          confirmationEmailBody: doc.confirmationEmailBody || undefined,
           status: doc.status,
           slug: `observe-the-moon-night/${doc.year}`,
         };
@@ -136,6 +140,8 @@ export async function getObserveMoonNightProject(
         feedbackUrl: doc.feedbackUrl || "",
         isFeedbackActive: doc.isFeedbackActive ?? true,
         feedbackFormHeight: doc.feedbackFormHeight || "1850",
+        confirmationEmailSubject: doc.confirmationEmailSubject || undefined,
+        confirmationEmailBody: doc.confirmationEmailBody || undefined,
         status: doc.status,
         slug: `observe-the-moon-night/${doc.year}`,
       };

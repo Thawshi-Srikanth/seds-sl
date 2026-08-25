@@ -71,6 +71,8 @@
     "feedbackUrl": "https://tally.so/r/gD604M?transparentBackground=1",
     "isFeedbackActive": true,
     "feedbackFormHeight": "1850",
+    "confirmationEmailSubject": "Registration Confirmation: International Observe the Moon Night 2026",
+    "confirmationEmailBody": "Thank you for registering for International Observe the Moon Night 2026! We are excited to have you join SEDS Sri Lanka for an evening of lunar science, telescopic observation, and space exploration. Please review your registration details below and keep this email for event access.",
     "status": "published"
   }
 ]

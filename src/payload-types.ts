@@ -1310,6 +1310,7 @@ export interface Division {
  */
 export interface MoonRegistration {
   id: number;
+  registrationCode?: string | null;
   fullName: string;
   email: string;
   phone?: string | null;
@@ -1396,6 +1397,14 @@ export interface ObserveMoonEvent {
    * Optional height in pixels for the feedback form iframe (e.g. 1850 or 2200). Defaults to 1850.
    */
   feedbackFormHeight?: string | null;
+  /**
+   * Custom email subject for registration confirmation (e.g. Registration Confirmed: International Observe the Moon Night 2026)
+   */
+  confirmationEmailSubject?: string | null;
+  /**
+   * Custom welcome message and event instructions included in the confirmation email sent to registrants for this year.
+   */
+  confirmationEmailBody?: string | null;
   status?: ("published" | "draft") | null;
   updatedAt: string;
   createdAt: string;
@@ -2056,6 +2065,7 @@ export interface DivisionsSelect<T extends boolean = true> {
  * via the `definition` "moon-registrations_select".
  */
 export interface MoonRegistrationsSelect<T extends boolean = true> {
+  registrationCode?: T;
   fullName?: T;
   email?: T;
   phone?: T;
@@ -2121,6 +2131,8 @@ export interface ObserveMoonEventsSelect<T extends boolean = true> {
   feedbackUrl?: T;
   isFeedbackActive?: T;
   feedbackFormHeight?: T;
+  confirmationEmailSubject?: T;
+  confirmationEmailBody?: T;
   status?: T;
   updatedAt?: T;
   createdAt?: T;
