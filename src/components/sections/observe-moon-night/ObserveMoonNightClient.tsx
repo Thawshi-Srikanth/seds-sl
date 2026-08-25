@@ -456,19 +456,22 @@ export function ObserveMoonNightClient({
         </div>
 
         {/* SECTION 5: DEDICATED REGISTRATION SECTION */}
-        <div id="register-section" className="w-full py-20 bg-background">
+        <div
+          id="register-section"
+          className="w-full py-20 bg-white text-slate-900 border-t border-slate-200"
+        >
           <div className="max-w-7xl mx-auto px-4 md:px-8 space-y-12">
             <div className="text-center max-w-3xl mx-auto space-y-3">
-              <div className="flex items-center justify-center gap-2 text-xs font-mono font-bold uppercase text-primary tracking-wider">
-                <CheckCircle2 className="size-4" />
+              <div className="flex items-center justify-center gap-2 text-xs font-mono font-bold uppercase text-blue-700 tracking-wider">
+                <CheckCircle2 className="size-4 text-blue-600" />
                 <span>OFFICIAL REGISTRATION FORM</span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-foreground font-mono">
+              <h2 className="text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-slate-900 font-mono">
                 Reserve Your Spot for Moon Night {year}
               </h2>
-              <p className="text-sm md:text-base text-muted-foreground">
-                Registration is free and open to all students, researchers, and
-                public space enthusiasts.
+              <p className="text-sm md:text-base text-slate-600">
+                Registration is open to all students, researchers, and public
+                space enthusiasts.
               </p>
             </div>
 

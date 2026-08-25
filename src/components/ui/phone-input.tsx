@@ -64,7 +64,7 @@ const InputComponent = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <Input
     className={cn(
-      "w-full bg-transparent border-0 border-none outline-none ring-0 shadow-none focus:ring-0 focus:outline-none focus:border-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-none text-foreground placeholder:text-muted-foreground/50 px-2 py-1.5 h-9 rounded-none",
+      "w-full bg-transparent border-0 border-none outline-none ring-0 shadow-none focus:ring-0 focus:outline-none focus:border-none focus-visible:ring-0 focus-visible:outline-none focus-visible:border-none text-current placeholder:text-muted-foreground/50 px-2 py-1.5 h-9 rounded-none",
       className,
     )}
     {...props}
@@ -106,7 +106,7 @@ const CountrySelect = ({
         <Button
           type="button"
           variant="outline"
-          className="flex gap-1 rounded-none border-0 outline-none ring-0 shadow-none focus:ring-0 focus:outline-none px-2.5 h-9 bg-transparent hover:bg-transparent text-foreground"
+          className="flex gap-1 rounded-none border-0 outline-none ring-0 shadow-none focus:ring-0 focus:outline-none px-2.5 h-9 bg-transparent hover:bg-transparent text-current"
           disabled={disabled}
         >
           <FlagComponent
@@ -184,10 +184,17 @@ const CountrySelectOption = ({
   };
 
   return (
-    <CommandItem className="gap-2" onSelect={handleSelect}>
+    <CommandItem
+      className="gap-2 cursor-pointer"
+      onSelect={handleSelect}
+      onMouseDown={(e) => {
+        e.preventDefault();
+        handleSelect();
+      }}
+    >
       <FlagComponent country={country} countryName={countryName} />
       <span className="flex-1 text-sm">{countryName}</span>
-      <span className="text-sm text-foreground/50">{`+${RPNInput.getCountryCallingCode(country)}`}</span>
+      <span className="text-sm text-foreground/60">{`+${RPNInput.getCountryCallingCode(country)}`}</span>
       <CheckIcon
         className={`ml-auto size-4 ${country === selectedCountry ? "opacity-100" : "opacity-0"}`}
       />
