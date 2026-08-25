@@ -68,6 +68,9 @@
         "websiteUrl": "https://www.accimt.ac.lk"
       }
     ],
+    "feedbackUrl": "https://tally.so/r/gD604M?transparentBackground=1",
+    "isFeedbackActive": true,
+    "feedbackFormHeight": "1850",
     "status": "published"
   }
 ]

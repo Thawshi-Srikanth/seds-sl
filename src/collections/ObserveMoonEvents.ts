@@ -240,6 +240,35 @@ export const ObserveMoonEvents: CollectionConfig = {
       ],
     },
     {
+      name: "feedbackUrl",
+      type: "text",
+      label: "Tally Feedback Form URL / Embed Link",
+      admin: {
+        description:
+          "Paste your Tally.so form link or embed URL (e.g. https://tally.so/r/gD604M?transparentBackground=1)",
+      },
+    },
+    {
+      name: "isFeedbackActive",
+      type: "checkbox",
+      defaultValue: true,
+      label: "Enable Feedback Form",
+      admin: {
+        description:
+          "Check to enable the feedback button and feedback page for this event year",
+      },
+    },
+    {
+      name: "feedbackFormHeight",
+      type: "text",
+      defaultValue: "1850",
+      label: "Tally Form Height (px)",
+      admin: {
+        description:
+          "Optional height in pixels for the feedback form iframe (e.g. 1850 or 2200). Defaults to 1850.",
+      },
+    },
+    {
       name: "status",
       type: "select",
       defaultValue: "published",

@@ -17,6 +17,7 @@ import {
   CloudSun,
   Wind,
   Eye,
+  MessageSquareHeart,
 } from "lucide-react";
 
 import { motion } from "motion/react";
@@ -151,6 +152,9 @@ export function ObserveMoonNightClient({
           locations={eventData?.locations}
           agenda={eventData?.agenda}
           description={description}
+          slug={slug}
+          feedbackUrl={eventData?.feedbackUrl}
+          isFeedbackActive={eventData?.isFeedbackActive}
         />
 
         {/* DEDICATED FULL-WIDTH LIVE COUNTDOWN SECTION */}
@@ -454,6 +458,37 @@ export function ObserveMoonNightClient({
             </div>
           </div>
         </div>
+
+        {/* SECTION 4.5: EVENT FEEDBACK BANNER SECTION (IF FEEDBACK ACTIVE AND URL CONFIGURED) */}
+        {eventData?.isFeedbackActive && eventData?.feedbackUrl && (
+          <div className="w-full border-t border-b border-border/60 py-16 bg-blue-950/30">
+            <div className="max-w-7xl mx-auto px-4 md:px-8">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6 p-8 border border-blue-800/40 bg-blue-950/50 backdrop-blur-sm">
+                <div className="space-y-2 text-center md:text-left">
+                  <div className="flex items-center justify-center md:justify-start gap-2 text-xs font-mono font-bold uppercase text-blue-400 tracking-wider">
+                    <MessageSquareHeart className="size-4 text-blue-400" />
+                    <span>EVENT FEEDBACK & SURVEY</span>
+                  </div>
+                  <h3 className="text-2xl font-bold font-mono text-white">
+                    Attended Observe the Moon Night {year}?
+                  </h3>
+                  <p className="text-sm text-slate-300 max-w-xl">
+                    Your feedback helps us refine future observation camps,
+                    telescope stations, and scientific lectures across Sri
+                    Lanka.
+                  </p>
+                </div>
+                <a
+                  href={`/projects/${slug || `observe-the-moon-night/${year}`}/feedback`}
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-mono text-sm font-bold uppercase tracking-wider transition-colors shrink-0"
+                >
+                  <MessageSquareHeart className="size-4" />
+                  <span>Give Feedback Now</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* SECTION 5: DEDICATED REGISTRATION SECTION */}
         <div

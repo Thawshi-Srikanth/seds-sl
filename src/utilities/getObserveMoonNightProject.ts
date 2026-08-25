@@ -20,6 +20,9 @@ export interface ObserveMoonEventResult {
   locations?: any[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   partners?: any[];
+  feedbackUrl?: string;
+  isFeedbackActive?: boolean;
+  feedbackFormHeight?: string;
   status: string;
   slug: string;
 }
@@ -74,6 +77,9 @@ export async function getObserveMoonNightProject(
           agenda: doc.agenda || [],
           locations: doc.locations || [],
           partners: doc.partners || [],
+          feedbackUrl: doc.feedbackUrl || "",
+          isFeedbackActive: doc.isFeedbackActive ?? true,
+          feedbackFormHeight: doc.feedbackFormHeight || "1850",
           status: doc.status,
           slug: `observe-the-moon-night/${doc.year}`,
         };
@@ -113,6 +119,9 @@ export async function getObserveMoonNightProject(
         agenda: doc.agenda || [],
         locations: doc.locations || [],
         partners: doc.partners || [],
+        feedbackUrl: doc.feedbackUrl || "",
+        isFeedbackActive: doc.isFeedbackActive ?? true,
+        feedbackFormHeight: doc.feedbackFormHeight || "1850",
         status: doc.status,
         slug: `observe-the-moon-night/${doc.year}`,
       };

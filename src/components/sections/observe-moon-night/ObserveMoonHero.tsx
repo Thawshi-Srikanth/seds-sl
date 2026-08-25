@@ -1,8 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Calendar, MapPin } from "lucide-react";
+import { Calendar, MapPin, MessageSquareHeart } from "lucide-react";
 import { motion } from "motion/react";
 
 import { SpaceScenePlaceholder } from "./moon-scene";
@@ -23,6 +24,9 @@ interface ObserveMoonHeroProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   agenda?: any[];
   description?: string;
+  slug?: string;
+  feedbackUrl?: string;
+  isFeedbackActive?: boolean;
 }
 
 export function ObserveMoonHero({
@@ -32,6 +36,9 @@ export function ObserveMoonHero({
   locations,
   agenda,
   description = "Join SEDS Sri Lanka for an annual global celebration of lunar science, telescopic observation, and space exploration. Connect with observers worldwide as we look up at the Moon together.",
+  slug,
+  feedbackUrl,
+  isFeedbackActive = true,
 }: ObserveMoonHeroProps) {
   // Format eventDate if ISO string is passed
   const formattedDate = eventDate
@@ -165,6 +172,16 @@ export function ObserveMoonHero({
                   }}
                 >
                   Explore Event Agenda
+                </Button>
+              )}
+              {isFeedbackActive && feedbackUrl && (
+                <Button asChild variant="outline" size="lg" bleed={true}>
+                  <Link
+                    href={`/projects/${slug || `observe-the-moon-night/${year}`}/feedback`}
+                  >
+                    <MessageSquareHeart className="size-4 mr-2 text-primary" />
+                    Give Event Feedback
+                  </Link>
                 </Button>
               )}
             </motion.div>

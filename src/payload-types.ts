@@ -1384,6 +1384,18 @@ export interface ObserveMoonEvent {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Paste your Tally.so form link or embed URL (e.g. https://tally.so/r/gD604M?transparentBackground=1)
+   */
+  feedbackUrl?: string | null;
+  /**
+   * Check to enable the feedback button and feedback page for this event year
+   */
+  isFeedbackActive?: boolean | null;
+  /**
+   * Optional height in pixels for the feedback form iframe (e.g. 1850 or 2200). Defaults to 1850.
+   */
+  feedbackFormHeight?: string | null;
   status?: ("published" | "draft") | null;
   updatedAt: string;
   createdAt: string;
@@ -2106,6 +2118,9 @@ export interface ObserveMoonEventsSelect<T extends boolean = true> {
         websiteUrl?: T;
         id?: T;
       };
+  feedbackUrl?: T;
+  isFeedbackActive?: T;
+  feedbackFormHeight?: T;
   status?: T;
   updatedAt?: T;
   createdAt?: T;
