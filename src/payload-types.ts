@@ -1405,7 +1405,10 @@ export interface ObserveMoonEvent {
    * Custom welcome message and event instructions included in the confirmation email sent to registrants for this year.
    */
   confirmationEmailBody?: string | null;
-  status?: ("published" | "draft") | null;
+  /**
+   * Only 'Published' events appear publicly on the Projects listing page and event URL routes.
+   */
+  status?: ("published" | "draft" | "unpublished") | null;
   updatedAt: string;
   createdAt: string;
 }
