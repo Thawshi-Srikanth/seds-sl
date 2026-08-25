@@ -22,6 +22,7 @@ const collections = [
   "divisions",
   "chapters",
   "projects",
+  "observe-moon-events",
 ];
 
 export const SeedButton: React.FC = () => {

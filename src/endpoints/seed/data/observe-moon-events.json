@@ -1,0 +1,78 @@
+[
+  {
+    "id": 1,
+    "title": "International Observe the Moon Night 2026",
+    "year": "2026",
+    "eventDate": "2026-09-19T00:00:00.000+05:30",
+    "startTime": "2026-09-19T18:30:00.000+05:30",
+    "endTime": "2026-09-19T22:30:00.000+05:30",
+    "description": "Join SEDS Sri Lanka for an annual global celebration of lunar science, telescopic observation, and space exploration. Connect with observers worldwide as we look up at the Moon together.",
+    "shortDescription": "Join SEDS Sri Lanka for an annual global celebration of lunar science, telescopic observation, and space exploration.",
+    "listingImage": 6,
+    "isFeatured": true,
+    "isPaid": true,
+    "ticketPrice": "1000",
+    "paymentDetails": "Bank: Bank of Ceylon (BOC)\nAccount Name: SEDS Sri Lanka\nAccount Number: 8746392011\nBranch: Corporate Branch, Colombo\nReference: OMN2026-[Your Full Name]",
+    "agenda": [
+      {
+        "time": "06:30 PM",
+        "stage": "PHASE 01",
+        "title": "Registration & Telescope Alignment",
+        "description": "Welcome briefing, participant check-in, and optical telescope calibration under the evening sky."
+      },
+      {
+        "time": "07:15 PM",
+        "stage": "PHASE 02",
+        "title": "Lunar Science Keynote Address",
+        "description": "Interactive lecture on lunar geology, crater formation, and upcoming human missions back to the Moon."
+      },
+      {
+        "time": "08:00 PM",
+        "stage": "PHASE 03",
+        "title": "Guided Optical Telescope Observation",
+        "description": "Live observation of crater rim shadows along the lunar terminator line, Mare Tranquillitatis, and Tycho crater."
+      },
+      {
+        "time": "09:15 PM",
+        "stage": "PHASE 04",
+        "title": "Eyepiece Astrophotography Session",
+        "description": "Capture high-resolution lunar photos directly through telescope eyepieces with expert photography assistance."
+      },
+      {
+        "time": "10:00 PM",
+        "stage": "PHASE 05",
+        "title": "Astronomy Quiz & Award Distribution",
+        "description": "Live trivia competition, announcement of winners, and distribution of official digital certificates."
+      }
+    ],
+    "locations": [
+      {
+        "name": "Galle Face Green",
+        "city": "Colombo 03",
+        "latitude": 6.9237882,
+        "longitude": 79.8449324,
+        "isPrimary": true
+      }
+    ],
+    "partners": [
+      {
+        "name": "Celestron Astronomy",
+        "logo": 10,
+        "partnershipType": "Equipment Partner",
+        "websiteUrl": "https://www.celestron.com"
+      },
+      {
+        "name": "Arthur C. Clarke Institute",
+        "logo": 10,
+        "partnershipType": "Academic Partner",
+        "websiteUrl": "https://www.accimt.ac.lk"
+      }
+    ],
+    "feedbackUrl": "https://tally.so/r/gD604M?transparentBackground=1",
+    "isFeedbackActive": true,
+    "feedbackFormHeight": "1850",
+    "confirmationEmailSubject": "Registration Confirmation: International Observe the Moon Night 2026",
+    "confirmationEmailBody": "Thank you for registering for International Observe the Moon Night 2026! We are excited to have you join SEDS Sri Lanka for an evening of lunar science, telescopic observation, and space exploration. Please review your registration details below and keep this email for event access.",
+    "status": "published"
+  }
+]

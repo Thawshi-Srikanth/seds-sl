@@ -81,6 +81,8 @@ export interface Config {
     categories: Category;
     pages: Page;
     divisions: Division;
+    "moon-registrations": MoonRegistration;
+    "observe-moon-events": ObserveMoonEvent;
     addresses: Address;
     variants: Variant;
     variantTypes: VariantType;
@@ -119,6 +121,12 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
     divisions: DivisionsSelect<false> | DivisionsSelect<true>;
+    "moon-registrations":
+      | MoonRegistrationsSelect<false>
+      | MoonRegistrationsSelect<true>;
+    "observe-moon-events":
+      | ObserveMoonEventsSelect<false>
+      | ObserveMoonEventsSelect<true>;
     addresses: AddressesSelect<false> | AddressesSelect<true>;
     variants: VariantsSelect<false> | VariantsSelect<true>;
     variantTypes: VariantTypesSelect<false> | VariantTypesSelect<true>;
@@ -1094,6 +1102,14 @@ export interface Project {
    */
   chapter?: (number | null) | Chapter;
   description: string;
+  /**
+   * Check to display this project in the Featured spotlight banner at top of Projects page
+   */
+  isFeatured?: boolean | null;
+  /**
+   * e.g. /projects/observe-the-moon-night. Leave empty to use default project page.
+   */
+  customLink?: string | null;
   hero: {
     type: "none" | "highImpact" | "mediumImpact" | "lowImpact";
     richText?: {
@@ -1285,6 +1301,111 @@ export interface Division {
     image?: (number | null) | Media;
     description?: string | null;
   };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "moon-registrations".
+ */
+export interface MoonRegistration {
+  id: number;
+  registrationCode?: string | null;
+  fullName: string;
+  email: string;
+  phone?: string | null;
+  institution: string;
+  selectedLocation?: string | null;
+  year: string;
+  eventSlug: string;
+  attendanceMode?: ("in-person" | "virtual" | "watch-party") | null;
+  equipment?: ("bringing-equipment" | "observer" | "astrophotography") | null;
+  paymentSlip?: (number | null) | Media;
+  paymentStatus?: ("n/a" | "pending" | "verified" | "rejected") | null;
+  notes?: string | null;
+  status?: ("confirmed" | "pending" | "cancelled") | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "observe-moon-events".
+ */
+export interface ObserveMoonEvent {
+  id: number;
+  title: string;
+  year: string;
+  eventDate?: string | null;
+  startTime?: string | null;
+  endTime?: string | null;
+  description?: string | null;
+  shortDescription?: string | null;
+  heroImage?: (number | null) | Media;
+  listingImage?: (number | null) | Media;
+  /**
+   * Check to display this flagship event in the Featured spotlight banner on Projects page
+   */
+  isFeatured?: boolean | null;
+  isPaid?: boolean | null;
+  ticketPrice?: string | null;
+  paymentDetails?: string | null;
+  agenda?:
+    | {
+        time: string;
+        stage?: string | null;
+        title: string;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  locations?:
+    | {
+        name: string;
+        city?: string | null;
+        latitude: number;
+        longitude: number;
+        isPrimary?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  partners?:
+    | {
+        name: string;
+        logo?: (number | null) | Media;
+        partnershipType?:
+          | (
+              | "Sponsor"
+              | "Global Partner"
+              | "Academic Partner"
+              | "Media Partner"
+              | "Equipment Partner"
+            )
+          | null;
+        websiteUrl?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Paste your Tally.so form link or embed URL (e.g. https://tally.so/r/gD604M?transparentBackground=1)
+   */
+  feedbackUrl?: string | null;
+  /**
+   * Check to enable the feedback button and feedback page for this event year
+   */
+  isFeedbackActive?: boolean | null;
+  /**
+   * Optional height in pixels for the feedback form iframe (e.g. 1850 or 2200). Defaults to 1850.
+   */
+  feedbackFormHeight?: string | null;
+  /**
+   * Custom email subject for registration confirmation (e.g. Registration Confirmed: International Observe the Moon Night 2026)
+   */
+  confirmationEmailSubject?: string | null;
+  /**
+   * Custom welcome message and event instructions included in the confirmation email sent to registrants for this year.
+   */
+  confirmationEmailBody?: string | null;
+  status?: ("published" | "draft") | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1487,6 +1608,14 @@ export interface PayloadLockedDocument {
         value: number | Division;
       } | null)
     | ({
+        relationTo: "moon-registrations";
+        value: number | MoonRegistration;
+      } | null)
+    | ({
+        relationTo: "observe-moon-events";
+        value: number | ObserveMoonEvent;
+      } | null)
+    | ({
         relationTo: "addresses";
         value: number | Address;
       } | null)
@@ -1629,6 +1758,8 @@ export interface ProjectsSelect<T extends boolean = true> {
   image?: T;
   chapter?: T;
   description?: T;
+  isFeatured?: T;
+  customLink?: T;
   hero?:
     | T
     | {
@@ -1926,6 +2057,83 @@ export interface DivisionsSelect<T extends boolean = true> {
         image?: T;
         description?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "moon-registrations_select".
+ */
+export interface MoonRegistrationsSelect<T extends boolean = true> {
+  registrationCode?: T;
+  fullName?: T;
+  email?: T;
+  phone?: T;
+  institution?: T;
+  selectedLocation?: T;
+  year?: T;
+  eventSlug?: T;
+  attendanceMode?: T;
+  equipment?: T;
+  paymentSlip?: T;
+  paymentStatus?: T;
+  notes?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "observe-moon-events_select".
+ */
+export interface ObserveMoonEventsSelect<T extends boolean = true> {
+  title?: T;
+  year?: T;
+  eventDate?: T;
+  startTime?: T;
+  endTime?: T;
+  description?: T;
+  shortDescription?: T;
+  heroImage?: T;
+  listingImage?: T;
+  isFeatured?: T;
+  isPaid?: T;
+  ticketPrice?: T;
+  paymentDetails?: T;
+  agenda?:
+    | T
+    | {
+        time?: T;
+        stage?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  locations?:
+    | T
+    | {
+        name?: T;
+        city?: T;
+        latitude?: T;
+        longitude?: T;
+        isPrimary?: T;
+        id?: T;
+      };
+  partners?:
+    | T
+    | {
+        name?: T;
+        logo?: T;
+        partnershipType?: T;
+        websiteUrl?: T;
+        id?: T;
+      };
+  feedbackUrl?: T;
+  isFeedbackActive?: T;
+  feedbackFormHeight?: T;
+  confirmationEmailSubject?: T;
+  confirmationEmailBody?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }

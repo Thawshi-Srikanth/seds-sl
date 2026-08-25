@@ -24,6 +24,8 @@ import { Divisions } from "@/collections/Divisions";
 import { plugins } from "@/plugins";
 import { Pages } from "@/collections/Pages";
 import { Categories } from "@/collections/Categories";
+import { MoonRegistrations } from "@/collections/MoonRegistrations";
+import { ObserveMoonEvents } from "@/collections/ObserveMoonEvents";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -49,7 +51,18 @@ export default buildConfig({
     },
   },
 
-  collections: [Users, Media, Projects, Chapters, Categories, Pages, Divisions],
+  collections: [
+    Users,
+    Media,
+    Projects,
+    Chapters,
+    Categories,
+    Pages,
+    Divisions,
+    MoonRegistrations,
+    ObserveMoonEvents,
+  ],
+
   editor: lexicalEditor({
     features: () => {
       return [

@@ -35,6 +35,7 @@ export const Projects: CollectionConfig = {
   slug: "projects",
   admin: {
     useAsTitle: "name",
+    group: "Projects & Initiatives",
     livePreview: {
       url: ({ data, req }) =>
         generatePreviewPath({
@@ -149,8 +150,28 @@ export const Projects: CollectionConfig = {
               label: "Short Description",
               required: true,
             },
+            {
+              name: "isFeatured",
+              type: "checkbox",
+              defaultValue: false,
+              label: "Feature this Project on Projects Page",
+              admin: {
+                description:
+                  "Check to display this project in the Featured spotlight banner at top of Projects page",
+              },
+            },
+            {
+              name: "customLink",
+              type: "text",
+              label: "Custom Page Link (Optional)",
+              admin: {
+                description:
+                  "e.g. /projects/observe-the-moon-night. Leave empty to use default project page.",
+              },
+            },
           ],
         },
+
         {
           fields: [hero],
           label: "Hero",

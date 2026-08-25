@@ -1,14 +1,20 @@
-import type { Payload, PayloadRequest, File } from "payload";
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
+import type { Payload, PayloadRequest } from "payload";
 
-const readData = (collection: string) => {
-  const dataPath = path.resolve(
+interface IDMap {
+  [collection: string]: {
+    [oldId: string | number]: string | number;
+  };
+}
+
+const readData = (collection: string): any[] => {
+  const filePath = path.resolve(
     process.cwd(),
     `src/endpoints/seed/data/${collection}.json`,
   );
-  if (!fs.existsSync(dataPath)) return [];
-  return JSON.parse(fs.readFileSync(dataPath, "utf-8"));
+  if (!fs.existsSync(filePath)) return [];
+  return JSON.parse(fs.readFileSync(filePath, "utf8"));
 };
 
 const getFileBuffer = (filename: string): File | null => {
@@ -18,64 +24,61 @@ const getFileBuffer = (filename: string): File | null => {
   );
   if (!fs.existsSync(filePath)) return null;
   const buffer = fs.readFileSync(filePath);
+  const ext = path.extname(filename).toLowerCase();
+  let type = "image/jpeg";
+  if (ext === ".png") type = "image/png";
+  if (ext === ".svg") type = "image/svg+xml";
+  if (ext === ".webp") type = "image/webp";
 
-  return {
-    name: filename,
-    data: buffer,
-    mimetype: `image/${filename.split(".").pop()}`,
-    size: buffer.byteLength,
-  };
+  return new File([buffer], filename, { type });
 };
 
-const getIdMapPath = () =>
-  path.resolve(process.cwd(), "src/endpoints/seed/data/id-map.json");
-
-const readIdMap = () => {
-  const p = getIdMapPath();
-  if (!fs.existsSync(p)) return {};
-  return JSON.parse(fs.readFileSync(p, "utf-8"));
+const readIdMap = (): IDMap => {
+  const filePath = path.resolve(
+    process.cwd(),
+    "src/endpoints/seed/data/id-map.json",
+  );
+  if (!fs.existsSync(filePath)) return {};
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf8"));
+  } catch {
+    return {};
+  }
 };
 
-const writeIdMap = (map: any) => {
-  fs.writeFileSync(getIdMapPath(), JSON.stringify(map, null, 2));
+const writeIdMap = (map: IDMap): void => {
+  const filePath = path.resolve(
+    process.cwd(),
+    "src/endpoints/seed/data/id-map.json",
+  );
+  fs.writeFileSync(filePath, JSON.stringify(map, null, 2), "utf8");
 };
 
-const resolveIDs = (obj: any, idMap: any): any => {
-  if (Array.isArray(obj)) return obj.map((item) => resolveIDs(item, idMap));
-  if (obj && typeof obj === "object") {
+const resolveIDs = (obj: any, idMap: IDMap): any => {
+  if (Array.isArray(obj)) {
+    return obj.map((item) => resolveIDs(item, idMap));
+  }
+  if (obj !== null && typeof obj === "object") {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newObj: any = {};
-    for (const [key, val] of Object.entries(obj)) {
-      if (val !== null && typeof val === "object") {
-        newObj[key] = resolveIDs(val, idMap);
-      } else if (typeof val === "number") {
-        if (
-          [
-            "media",
-            "image",
-            "logo",
-            "logoDark",
-            "logoLight",
-            "mainImage",
-          ].includes(key) &&
-          idMap["media"]?.[val]
-        ) {
-          newObj[key] = idMap["media"][val];
-        } else if (
-          ["chapter", "chapters"].includes(key) &&
-          idMap["chapters"]?.[val]
-        ) {
-          newObj[key] = idMap["chapters"][val];
-        } else if (
-          ["form", "contactForm"].includes(key) &&
-          idMap["forms"]?.[val]
-        ) {
-          newObj[key] = idMap["forms"][val];
-        } else {
-          newObj[key] = val;
-        }
-      } else {
-        newObj[key] = val;
+    for (const key of Object.keys(obj)) {
+      let val = obj[key];
+      if (
+        typeof val === "object" &&
+        val !== null &&
+        val._relationTo &&
+        val._value
+      ) {
+        const mappedId = idMap[val._relationTo]?.[val._value];
+        val = mappedId || val._value;
+      } else if (
+        (key === "logo" || key === "heroImage" || key === "avatar") &&
+        (typeof val === "number" || typeof val === "string")
+      ) {
+        const mappedId = idMap.media?.[val];
+        if (mappedId) val = mappedId;
       }
+      newObj[key] = resolveIDs(val, idMap);
     }
     return newObj;
   }
@@ -102,16 +105,12 @@ export const seed = async ({
     "divisions",
     "chapters",
     "projects",
+    "observe-moon-events",
   ];
+
   const collectionsToSeed = collection ? [collection] : availableCollections;
 
-  // If seeding from scratch (media is first), clear the ID map
-  if (collectionsToSeed.includes("media") && collectionsToSeed.length === 1) {
-    writeIdMap({});
-  } else if (!collection) {
-    writeIdMap({});
-  }
-
+  // Read or initialize ID map
   const idMap = readIdMap();
 
   for (const coll of collectionsToSeed) {
@@ -121,16 +120,6 @@ export const seed = async ({
     }
 
     payload.logger.info(`— Seeding ${coll}...`);
-
-    try {
-      await payload.delete({
-        collection: coll as any,
-        req,
-        where: { id: { exists: true } },
-      });
-    } catch (e) {
-      payload.logger.error(`Error deleting ${coll}: ${e}`);
-    }
 
     const docs = readData(coll);
     if (!docs.length) {
@@ -151,6 +140,53 @@ export const seed = async ({
       // Resolve relational IDs
       const docData = resolveIDs(rawDocData, idMap);
 
+      // Check if media document already exists by filename
+      if (coll === "media" && docData.filename) {
+        try {
+          const existingMedia = await payload.find({
+            collection: "media",
+            where: { filename: { equals: docData.filename } },
+            limit: 1,
+          });
+          if (existingMedia.docs[0]) {
+            idMap[coll][oldId] = existingMedia.docs[0].id;
+            payload.logger.info(
+              `Found existing media "${docData.filename}" -> ID ${existingMedia.docs[0].id}`,
+            );
+            continue;
+          }
+        } catch {
+          // Ignore and create if lookup fails
+        }
+      }
+
+      // Check if observe-moon-event document already exists by year
+      if (coll === "observe-moon-events" && docData.year) {
+        try {
+          const existingEvent = await payload.find({
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            collection: "observe-moon-events" as any,
+            where: { year: { equals: docData.year } },
+            limit: 1,
+          });
+          if (existingEvent.docs[0]) {
+            const updated = await payload.update({
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              collection: "observe-moon-events" as any,
+              id: existingEvent.docs[0].id,
+              data: docData,
+            });
+            idMap[coll][oldId] = updated.id;
+            payload.logger.info(
+              `Updated existing observe-moon-event year ${docData.year} -> ID ${updated.id}`,
+            );
+            continue;
+          }
+        } catch {
+          // Ignore and create if lookup fails
+        }
+      }
+
       let fileData: File | null = null;
       if (coll === "media" && docData.filename) {
         fileData = getFileBuffer(docData.filename);
@@ -158,14 +194,16 @@ export const seed = async ({
 
       try {
         const created = await payload.create({
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           collection: coll as any,
           req,
           data: docData,
           ...(fileData ? { file: fileData } : {}),
-        });
+        } as any);
 
         // Map old ID to new ID
         idMap[coll][oldId] = created.id;
+        payload.logger.info(`Created ${coll} doc ID ${created.id}`);
       } catch (e) {
         payload.logger.error(`Failed to create doc ${oldId} in ${coll}: ${e}`);
       }
