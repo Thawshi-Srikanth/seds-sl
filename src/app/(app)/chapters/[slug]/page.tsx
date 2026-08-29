@@ -13,6 +13,24 @@ import {
   FaLink,
 } from "react-icons/fa";
 
+export const revalidate = 3600; // Revalidate every hour
+
+export async function generateStaticParams() {
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const chapters = await payload.find({
+      collection: "chapters",
+      limit: 100,
+      select: {
+        slug: true,
+      },
+    });
+    return chapters.docs.map((doc) => ({ slug: doc.slug }));
+  } catch (error) {
+    return [];
+  }
+}
+
 // Generate metadata for better social media sharing
 export async function generateMetadata({
   params,

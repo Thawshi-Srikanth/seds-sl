@@ -33,15 +33,20 @@ const IconMap: Record<string, LucideIcon> = {
   Users,
 };
 
-const DivisionsSection = () => {
-  const [divisions, setDivisions] = useState<Division[]>([]);
+const DivisionsSection = ({
+  initialDivisions = [],
+}: {
+  initialDivisions?: Division[];
+}) => {
+  const [divisions, setDivisions] = useState<Division[]>(initialDivisions);
 
   useEffect(() => {
+    if (initialDivisions.length > 0) return;
     fetch("/api/divisions?limit=3&depth=1")
       .then((res) => res.json())
       .then((data) => setDivisions(data.docs || []))
       .catch(console.error);
-  }, []);
+  }, [initialDivisions]);
 
   return (
     <section className="light-mode-section relative w-full pt-8 md:pt-12 lg:pt-16">

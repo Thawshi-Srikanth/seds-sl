@@ -26,7 +26,23 @@ import { FaTwitter, FaLinkedin, FaFacebook, FaWhatsapp } from "react-icons/fa";
 import type { Metadata } from "next";
 import { getServerSideURL } from "@/utilities/getURL";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600; // Revalidate every hour
+
+export async function generateStaticParams() {
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const divisions = await payload.find({
+      collection: "divisions",
+      limit: 100,
+      select: {
+        slug: true,
+      },
+    });
+    return divisions.docs.map((doc) => ({ slug: doc.slug }));
+  } catch (error) {
+    return [];
+  }
+}
 
 const IconMap: Record<string, LucideIcon> = {
   Bot,

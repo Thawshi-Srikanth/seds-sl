@@ -47,19 +47,29 @@ async function fetchDivisions(query: string): Promise<Division[]> {
   return data.docs ?? [];
 }
 
-export function DivisionsClient() {
-  const [divisions, setDivisions] = useState<Division[]>([]);
+export function DivisionsClient({
+  initialDivisions = [],
+}: {
+  initialDivisions?: Division[];
+}) {
+  const [divisions, setDivisions] = useState<Division[]>(initialDivisions);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery] = useDebounce(searchQuery, 300);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(initialDivisions.length === 0);
 
   useEffect(() => {
+    if (!debouncedQuery && initialDivisions.length > 0) {
+      setDivisions(initialDivisions);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     fetchDivisions(debouncedQuery)
       .then(setDivisions)
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, [debouncedQuery]);
+  }, [debouncedQuery, initialDivisions]);
 
   return (
     <>

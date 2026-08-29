@@ -9,6 +9,8 @@ import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/providers";
 import { LivePreviewListener } from "@/components/LivePreviewListener";
 
+import { getServerSideURL } from "@/utilities/getURL";
+
 const barlow = Barlow({
   variable: "--font-sans",
   subsets: ["latin"],
@@ -21,6 +23,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getServerSideURL()),
   title: "SEDS SL",
   description:
     "Students for the Exploration & Development of Space (SEDS), Sri Lanka.",

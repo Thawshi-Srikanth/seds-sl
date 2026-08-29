@@ -51,6 +51,47 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  headers: async () => [
+    {
+      source: "/api/media/:path*",
+      headers: [
+        {
+          key: "Cache-Control",
+          value: "public, max-age=31536000, immutable",
+        },
+      ],
+    },
+    {
+      source: "/api/divisions",
+      headers: [
+        {
+          key: "Cache-Control",
+          value:
+            "public, max-age=60, s-maxage=3600, stale-while-revalidate=86400",
+        },
+      ],
+    },
+    {
+      source: "/api/projects",
+      headers: [
+        {
+          key: "Cache-Control",
+          value:
+            "public, max-age=60, s-maxage=3600, stale-while-revalidate=86400",
+        },
+      ],
+    },
+    {
+      source: "/api/chapters",
+      headers: [
+        {
+          key: "Cache-Control",
+          value:
+            "public, max-age=60, s-maxage=3600, stale-while-revalidate=86400",
+        },
+      ],
+    },
+  ],
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {
       ".cjs": [".cts", ".cjs"],

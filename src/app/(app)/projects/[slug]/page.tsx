@@ -5,6 +5,24 @@ import { notFound } from "next/navigation";
 import { RenderBlocks } from "@/blocks/RenderBlocks";
 import { RenderHero } from "@/heros/RenderHero";
 
+export const revalidate = 3600; // Revalidate every hour
+
+export async function generateStaticParams() {
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const projects = await payload.find({
+      collection: "projects",
+      limit: 100,
+      select: {
+        slug: true,
+      },
+    });
+    return projects.docs.map((doc) => ({ slug: doc.slug }));
+  } catch (error) {
+    return [];
+  }
+}
+
 async function getProject(slug: string): Promise<Project | null> {
   try {
     const payload = await getPayload({ config: configPromise });
