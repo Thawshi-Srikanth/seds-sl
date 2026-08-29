@@ -141,6 +141,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         posthog.reset();
         setUser(null);
         setStatus("loggedOut");
+        try {
+          sessionStorage.removeItem("seds_user");
+        } catch (_) {}
       } else {
         throw new Error("An error occurred while attempting to logout.");
       }
@@ -151,6 +154,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     const fetchMe = async () => {
+      // Avoid unnecessary edge requests for guest visitors without auth cookies
+      const hasAuthCookie = document.cookie
+        .split(";")
+        .some(
+          (item) =>
+            item.trim().startsWith("payload-token=") ||
+            item.trim().startsWith("users-token="),
+        );
+
+      if (!hasAuthCookie) {
+        setUser(null);
+        setStatus(undefined);
+        try {
+          sessionStorage.removeItem("seds_user");
+        } catch (_) {}
+        return;
+      }
+
+      // Check session storage first for instant load
+      try {
+        const cachedUser = sessionStorage.getItem("seds_user");
+        if (cachedUser) {
+          const parsed = JSON.parse(cachedUser);
+          setUser(parsed);
+          setStatus("loggedIn");
+        }
+      } catch (_) {}
+
       try {
         const res = await fetch(`${getClientSideURL()}/api/users/me`, {
           credentials: "include",
@@ -163,14 +194,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         if (res.ok) {
           const { user: meUser } = await res.json();
           setUser(meUser || null);
-          if (meUser) identifyUser(meUser);
+          if (meUser) {
+            identifyUser(meUser);
+            try {
+              sessionStorage.setItem("seds_user", JSON.stringify(meUser));
+            } catch (_) {}
+          } else {
+            try {
+              sessionStorage.removeItem("seds_user");
+            } catch (_) {}
+          }
           setStatus(meUser ? "loggedIn" : undefined);
         } else {
-          throw new Error("An error occurred while fetching your account.");
+          setUser(null);
+          try {
+            sessionStorage.removeItem("seds_user");
+          } catch (_) {}
         }
       } catch (e) {
         setUser(null);
-        throw new Error("An error occurred while fetching your account.");
       }
     };
 

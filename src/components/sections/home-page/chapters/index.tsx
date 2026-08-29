@@ -9,13 +9,18 @@ import { useEffect, useState } from "react";
 import type { Chapter } from "@/payload-types";
 import { fetchChapters } from "@/actions/chapters";
 
-export default function Component() {
+export default function Component({
+  initialChapters = [],
+}: {
+  initialChapters?: Chapter[];
+}) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [chapters, setChapters] = useState<Chapter[]>(initialChapters);
 
   useEffect(() => {
     setMounted(true);
+    if (initialChapters.length > 0) return;
     const loadChapters = async () => {
       try {
         const fetchedChapters = await fetchChapters();
@@ -25,7 +30,7 @@ export default function Component() {
       }
     };
     loadChapters();
-  }, []);
+  }, [initialChapters]);
 
   const getMediaUrl = (media: any): string => {
     if (typeof media === "object" && media !== null && "url" in media) {

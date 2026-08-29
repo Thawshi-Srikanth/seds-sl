@@ -72,14 +72,20 @@ const ProjectCard = ({
   );
 };
 
-export function ProjectsSection() {
-  const [projects, setProjects] = useState<UnifiedProjectItem[]>([]);
+export function ProjectsSection({
+  initialProjects = [],
+}: {
+  initialProjects?: UnifiedProjectItem[];
+}) {
+  const [projects, setProjects] =
+    useState<UnifiedProjectItem[]>(initialProjects);
 
   useEffect(() => {
+    if (initialProjects.length > 0) return;
     fetchProjects()
       .then((data) => setProjects(data.slice(0, 3)))
       .catch(console.error);
-  }, []);
+  }, [initialProjects]);
 
   return (
     <section className="light-mode-section relative w-full pt-8 md:pt-12 lg:pt-16">

@@ -111,6 +111,10 @@ export default buildConfig({
     push: process.env.PAYLOAD_PUSH === "true",
     pool: {
       connectionString: process.env.DATABASE_URI || "",
+      max: process.env.DATABASE_POOL_MAX
+        ? parseInt(process.env.DATABASE_POOL_MAX, 10)
+        : 10,
+      idleTimeoutMillis: 30000,
       // Fail fast during build if DB is offline.
       connectionTimeoutMillis:
         process.env.npm_lifecycle_event === "build" ? 2000 : 10000,

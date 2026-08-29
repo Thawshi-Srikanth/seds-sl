@@ -5,16 +5,50 @@ import ProjectsSection from "@/components/sections/home-page/projects/projectsse
 import FAQSection from "@/components/sections/home-page/faqs/faqsection";
 import WhoWeAreSection from "@/components/sections/home-page/who-we-are/whowearesection";
 import ContactSection from "@/components/sections/home-page/contact/contact-section";
+import configPromise from "@payload-config";
+import { getPayload } from "payload";
+import { fetchChapters } from "@/actions/chapters";
+import { fetchProjects, type UnifiedProjectItem } from "@/actions/projects";
+import type { Chapter, Division } from "@/payload-types";
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
-export default function Home() {
+export default async function Home() {
+  let divisions: Division[] = [];
+  let chapters: Chapter[] = [];
+  let projects: UnifiedProjectItem[] = [];
+
+  try {
+    const payload = await getPayload({ config: configPromise });
+    const divisionsRes = await payload.find({
+      collection: "divisions",
+      limit: 3,
+      depth: 1,
+    });
+    divisions = divisionsRes.docs as Division[];
+  } catch (err) {
+    console.error("Error loading divisions for homepage:", err);
+  }
+
+  try {
+    chapters = await fetchChapters();
+  } catch (err) {
+    console.error("Error loading chapters for homepage:", err);
+  }
+
+  try {
+    const fetchedProjects = await fetchProjects();
+    projects = fetchedProjects.slice(0, 3);
+  } catch (err) {
+    console.error("Error loading projects for homepage:", err);
+  }
+
   return (
     <div className="w-full divide-y divide-border/60">
       <SectionOne />
-      <Chapters />
-      <DivisionsSection />
-      <ProjectsSection />
+      <Chapters initialChapters={chapters} />
+      <DivisionsSection initialDivisions={divisions} />
+      <ProjectsSection initialProjects={projects} />
       <FAQSection />
       <WhoWeAreSection />
       <ContactSection />
