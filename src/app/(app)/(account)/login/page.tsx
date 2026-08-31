@@ -23,9 +23,7 @@ export default async function Login() {
   }
 
   if (user) {
-    redirect(
-      `/account?warning=${encodeURIComponent("You are already logged in.")}`,
-    );
+    redirect("/account");
   }
 
   return (

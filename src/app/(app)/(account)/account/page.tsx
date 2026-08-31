@@ -27,9 +27,7 @@ export default async function AccountPage() {
   let orders: Order[] | null = null;
 
   if (!user) {
-    redirect(
-      `/login?warning=${encodeURIComponent("Please login to access your account settings.")}`,
-    );
+    redirect("/login");
   }
 
   try {

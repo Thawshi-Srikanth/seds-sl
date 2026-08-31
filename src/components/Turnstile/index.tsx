@@ -89,7 +89,14 @@ export function Turnstile({
       if (window.turnstile && containerRef.current) {
         try {
           if (widgetIdRef.current) {
-            window.turnstile.remove(widgetIdRef.current);
+            const oldId = widgetIdRef.current;
+            widgetIdRef.current = null;
+            try {
+              window.turnstile.remove(oldId);
+            } catch (_) {}
+          }
+          if (containerRef.current) {
+            containerRef.current.innerHTML = "";
           }
           const widgetId = window.turnstile.render(containerRef.current, {
             sitekey: siteKey,
@@ -126,8 +133,10 @@ export function Turnstile({
 
     return () => {
       if (widgetIdRef.current && window.turnstile) {
+        const oldId = widgetIdRef.current;
+        widgetIdRef.current = null;
         try {
-          window.turnstile.remove(widgetIdRef.current);
+          window.turnstile.remove(oldId);
         } catch (_) {}
       }
     };
