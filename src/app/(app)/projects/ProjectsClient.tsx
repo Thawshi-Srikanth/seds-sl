@@ -177,7 +177,7 @@ export function ProjectsClient({
                           </span>
                         </div>
 
-                        <Link href={targetLink}>
+                        <Link href={targetLink} prefetch={false}>
                           <Button variant="default" size="sm" bleed={true}>
                             <span>View Initiative</span>
                             <ArrowRight className="size-3.5 ml-1" />

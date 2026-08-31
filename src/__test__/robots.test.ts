@@ -10,7 +10,34 @@ describe("robots.ts metadata route", () => {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin/", "/api/"],
+        disallow: [
+          "/admin/",
+          "/api/",
+          "/wp-admin/",
+          "/wp-content/",
+          "/wp-includes/",
+          "/wp-json/",
+          "/xmlrpc.php",
+          "/*.php$",
+          "/*.php?*",
+        ],
+      },
+      {
+        userAgent: [
+          "GPTBot",
+          "ChatGPT-User",
+          "ClaudeBot",
+          "CCBot",
+          "Bytespider",
+          "SemrushBot",
+          "AhrefsBot",
+          "MJ12bot",
+          "DotBot",
+          "PetalBot",
+          "DataForSeoBot",
+          "Amazonbot",
+        ],
+        disallow: "/",
       },
     ]);
     expect(config.sitemap).toContain("/sitemap.xml");

@@ -10,6 +10,7 @@ import { getClientSideURL } from "@/utilities/getURL";
 import Link from "next/link";
 import React, { Fragment, useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Turnstile } from "@/components/Turnstile";
 import posthog from "posthog-js";
 
 type FormData = {
@@ -49,6 +50,8 @@ export const ForgotPasswordForm: React.FC = () => {
     }
   }, []);
 
+  const [turnstileToken, setTurnstileToken] = useState("");
+
   return (
     <Fragment>
       {!success && (
@@ -81,6 +84,13 @@ export const ForgotPasswordForm: React.FC = () => {
                 />
                 {errors.email && <FormError message={errors.email.message} />}
               </FormItem>
+            </div>
+
+            <div className="py-1 flex justify-start">
+              <Turnstile
+                align="left"
+                onVerify={(token) => setTurnstileToken(token)}
+              />
             </div>
 
             <div className="pt-2 space-y-4">

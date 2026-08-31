@@ -96,6 +96,7 @@ export default function FullScreenMenu({
                       >
                         <Link
                           href={link.href}
+                          prefetch={false}
                           onClick={onClose}
                           className={cn(
                             "group flex items-center justify-between py-3.5 sm:py-4 md:py-5 px-4 md:px-6 transition-all duration-200 border-x border-y-0 font-mono text-xl sm:text-2xl lg:text-3xl font-extrabold uppercase tracking-tight",
@@ -133,6 +134,7 @@ export default function FullScreenMenu({
                       >
                         <Link
                           href={link.href}
+                          prefetch={false}
                           onClick={onClose}
                           className={cn(
                             "group flex items-center justify-between py-3.5 sm:py-4 md:py-5 px-4 md:px-6 transition-all duration-200 border-x border-y-0 font-mono text-xl sm:text-2xl lg:text-3xl font-extrabold uppercase tracking-tight",

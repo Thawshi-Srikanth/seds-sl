@@ -26,6 +26,11 @@ import {
 import { generatePreviewPath } from "@/utilities/generatePreviewPath";
 import type { CollectionSlug } from "payload";
 
+import {
+  revalidateCollection,
+  revalidateCollectionDelete,
+} from "@/utilities/revalidateCollection";
+
 interface DivisionData {
   name?: string;
   slug?: string;
@@ -53,6 +58,8 @@ export const Divisions: CollectionConfig = {
     read: () => true,
   },
   hooks: {
+    afterChange: [revalidateCollection("divisions")],
+    afterDelete: [revalidateCollectionDelete("divisions")],
     beforeValidate: [
       async ({ data, req }) => {
         const typedData = data as DivisionData;

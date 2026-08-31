@@ -155,7 +155,7 @@ export function ChaptersClient({
                         {chapter.contactEmail && <span>Email Contact</span>}
                       </div>
 
-                      <Link href={`/chapters/${chapter.slug}`}>
+                      <Link href={`/chapters/${chapter.slug}`} prefetch={false}>
                         <Button variant="outline" size="sm" bleed={true}>
                           Know More
                         </Button>

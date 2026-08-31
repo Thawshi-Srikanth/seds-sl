@@ -3,6 +3,8 @@ import { getPayload } from "payload";
 import configPromise from "@payload-config";
 import { generateRegistrationEmail } from "@/utilities/generateRegistrationEmail";
 
+import { verifyTurnstileToken } from "@/utilities/verifyTurnstile";
+
 function generateRegistrationCode(year: string): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let randomStr = "";
@@ -31,6 +33,8 @@ export async function POST(req: Request) {
 
     const payload = await getPayload({ config: configPromise });
 
+    let turnstileToken: string | null = null;
+
     if (contentType.includes("multipart/form-data")) {
       const formData = await req.formData();
       fullName = (formData.get("fullName") as string) || "";
@@ -49,6 +53,7 @@ export async function POST(req: Request) {
       selectedLocation = (formData.get("selectedLocation") as string) || "";
       notes = (formData.get("notes") as string) || "";
       isPaidEvent = formData.get("isPaid") === "true";
+      turnstileToken = (formData.get("turnstileToken") as string) || null;
 
       const file = formData.get("paymentSlip") as File | null;
       if (file && file.size > 0) {
@@ -86,6 +91,17 @@ export async function POST(req: Request) {
       selectedLocation = body.selectedLocation || "";
       notes = body.notes || "";
       isPaidEvent = Boolean(body.isPaid);
+      turnstileToken = body.turnstileToken || null;
+    }
+
+    if (turnstileToken) {
+      const turnstileResult = await verifyTurnstileToken(turnstileToken);
+      if (!turnstileResult.success) {
+        return NextResponse.json(
+          { error: turnstileResult.error || "Bot verification failed" },
+          { status: 400 },
+        );
+      }
     }
 
     if (!fullName || !email || !institution) {

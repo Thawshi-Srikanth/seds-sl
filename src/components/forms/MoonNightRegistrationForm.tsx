@@ -26,6 +26,7 @@ import {
   CreditCard,
   ShieldCheck,
 } from "lucide-react";
+import { Turnstile } from "@/components/Turnstile";
 import type { ObserveMoonEventResult } from "@/utilities/getObserveMoonNightProject";
 
 const registrationSchema = z.object({
@@ -60,6 +61,7 @@ export function MoonNightRegistrationForm({
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [passCode, setPassCode] = useState<string | null>(null);
   const [paymentFile, setPaymentFile] = useState<File | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
 
   const isPaidEvent = Boolean(eventData?.isPaid);
   const locations = eventData?.locations || [];
@@ -104,6 +106,9 @@ export function MoonNightRegistrationForm({
       formData.append("notes", data.notes || "");
       formData.append("year", year);
       formData.append("eventTitle", eventData?.title || `Observe Moon ${year}`);
+      if (turnstileToken) {
+        formData.append("turnstileToken", turnstileToken);
+      }
 
       if (paymentFile) {
         formData.append("paymentSlip", paymentFile);
@@ -478,6 +483,23 @@ export function MoonNightRegistrationForm({
                 {errors.termsAccepted.message}
               </p>
             )}
+          </div>
+
+          {/* Turnstile Bot Protection */}
+          <div className="p-6 bg-white border-t border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900 block">
+                Secured by Cloudflare
+              </span>
+              <p className="text-xs text-slate-600 font-sans">
+                Turnstile Bot Protection
+              </p>
+            </div>
+            <Turnstile
+              theme="light"
+              align="left"
+              onVerify={(token) => setTurnstileToken(token)}
+            />
           </div>
 
           {/* Submit Action Area */}

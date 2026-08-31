@@ -34,6 +34,7 @@ export function UserNav() {
     return (
       <Link
         href="/login"
+        prefetch={false}
         className="h-full px-5 sm:px-8 border-l border-border/60 flex items-center justify-center gap-2 font-mono text-xs sm:text-sm font-bold uppercase tracking-wider text-foreground hover:bg-muted/20 transition-colors cursor-pointer group"
       >
         <span>Sign In</span>

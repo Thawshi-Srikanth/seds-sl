@@ -54,7 +54,10 @@ export default function Component({
                   >
                     {mounted ? (
                       <div className="hover:pause-marquee">
-                        <Link href={`/chapters/${chapter.slug}`}>
+                        <Link
+                          href={`/chapters/${chapter.slug}`}
+                          prefetch={false}
+                        >
                           <Image
                             src={
                               resolvedTheme === "dark" && chapter.logoLight
