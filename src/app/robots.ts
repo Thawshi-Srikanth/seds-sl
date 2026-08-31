@@ -9,7 +9,17 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin/", "/api/"],
+        disallow: [
+          "/admin/",
+          "/api/",
+          "/wp-admin/",
+          "/wp-content/",
+          "/wp-includes/",
+          "/wp-json/",
+          "/xmlrpc.php",
+          "/*.php$",
+          "/*.php?*",
+        ],
       },
       {
         userAgent: [
