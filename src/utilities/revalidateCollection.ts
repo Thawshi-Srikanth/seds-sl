@@ -1,4 +1,4 @@
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import type {
   CollectionAfterChangeHook,
   CollectionAfterDeleteHook,
@@ -6,16 +6,12 @@ import type {
 
 export const revalidateCollection =
   (collectionSlug: string): CollectionAfterChangeHook =>
-  async ({ doc, previousDoc, req }) => {
+  async ({ doc, req }) => {
     if (req.payload) {
       try {
-        // Revalidate specific collection cache tag
-        revalidateTag(collectionSlug);
         if (doc?.slug) {
-          revalidateTag(`${collectionSlug}_${doc.slug}`);
           revalidatePath(`/${collectionSlug}/${doc.slug}`);
         }
-        // Revalidate collection list page and homepage
         revalidatePath(`/${collectionSlug}`);
         revalidatePath("/");
       } catch (err) {
@@ -30,9 +26,7 @@ export const revalidateCollectionDelete =
   async ({ doc, req }) => {
     if (req.payload) {
       try {
-        revalidateTag(collectionSlug);
         if (doc?.slug) {
-          revalidateTag(`${collectionSlug}_${doc.slug}`);
           revalidatePath(`/${collectionSlug}/${doc.slug}`);
         }
         revalidatePath(`/${collectionSlug}`);
