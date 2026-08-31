@@ -27,6 +27,45 @@ export interface RegistrationEmailParams {
   agenda?: any[];
 }
 
+export function formatDateISO(dateStr?: string | null): string {
+  if (!dateStr) return "Saturday, September 19, 2026";
+  if (dateStr.includes("T") || !isNaN(Date.parse(dateStr))) {
+    const d = new Date(dateStr);
+    if (!isNaN(d.getTime())) {
+      return d.toLocaleDateString("en-US", {
+        timeZone: "Asia/Colombo",
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      });
+    }
+  }
+  return dateStr;
+}
+
+export function formatTimeISO(timeStr?: string | null): string {
+  if (!timeStr) return "Evening";
+  if (timeStr.includes(" - ")) {
+    const [start, end] = timeStr.split(" - ");
+    const formattedStart = formatTimeISO(start.trim());
+    const formattedEnd = formatTimeISO(end.trim());
+    return `${formattedStart} - ${formattedEnd}`;
+  }
+  if (timeStr.includes("T") || !isNaN(Date.parse(timeStr))) {
+    const d = new Date(timeStr);
+    if (!isNaN(d.getTime())) {
+      return d.toLocaleTimeString("en-US", {
+        timeZone: "Asia/Colombo",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      });
+    }
+  }
+  return timeStr;
+}
+
 export function generateRegistrationEmail(params: RegistrationEmailParams): {
   subject: string;
   html: string;
@@ -86,19 +125,12 @@ export function generateRegistrationEmail(params: RegistrationEmailParams): {
           ? "Vegan"
           : "None / No Meal Required";
 
-  const formattedDate = eventDate
-    ? eventDate.includes("T")
-      ? new Date(eventDate).toLocaleDateString("en-US", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          timeZone: "Asia/Colombo",
-        })
-      : eventDate
-    : "Saturday, September 19, 2026";
+  const formattedDate = formatDateISO(eventDate);
+  const formattedTimeDisplay = formatTimeISO(eventTime);
 
-  const formattedTime = eventTime || "06:30 PM - 10:30 PM (SLST)";
+  const formattedTime = formattedTimeDisplay.includes("SLST")
+    ? formattedTimeDisplay
+    : `${formattedTimeDisplay} (SLST)`;
 
   // Determine Email Subject
   let subject = `Observe the Moon Night ${year} Registration`;
@@ -107,7 +139,8 @@ export function generateRegistrationEmail(params: RegistrationEmailParams): {
   } else if (isPendingVerification) {
     subject = `Registration Received - Pending Verification | Moon Night ${year}`;
   } else {
-    subject = cmsSubject || `Registration Confirmed: Observe the Moon Night ${year}`;
+    subject =
+      cmsSubject || `Registration Confirmed: Observe the Moon Night ${year}`;
   }
 
   // Determine status display
@@ -160,12 +193,13 @@ export function generateRegistrationEmail(params: RegistrationEmailParams): {
       <td style="color: #ffffff; font-family: 'Barlow', sans-serif; font-size: 13px; padding: 6px 0;">${mealLabel}${dietaryRestrictions ? ` (${dietaryRestrictions})` : ""}</td>
     </tr>`;
 
-  const adminSlipHtml = isAdminAlert && paymentSlipUrl
-    ? `<div style="border: 1px solid #1e293b; background-color: #0f172a; padding: 16px; margin-bottom: 24px; text-align: center;">
+  const adminSlipHtml =
+    isAdminAlert && paymentSlipUrl
+      ? `<div style="border: 1px solid #1e293b; background-color: #0f172a; padding: 16px; margin-bottom: 24px; text-align: center;">
         <span style="color: #64748b; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 8px;">ATTACHED PAYMENT RECEIPT</span>
         <a href="${paymentSlipUrl}" style="color: #3b82f6; font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 700; text-decoration: underline;">View Payment Receipt File →</a>
        </div>`
-    : "";
+      : "";
 
   const html = `
 <!DOCTYPE html>

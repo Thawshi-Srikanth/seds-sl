@@ -504,7 +504,10 @@ export function ObserveMoonNightClient({
               </h2>
 
               <p className="text-sm md:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
-                Registration is officially open to all students, astronomy enthusiasts, and researchers. Complete our multi-step registration form to secure your pass and select your host observation site.
+                Registration is officially open to all students, astronomy
+                enthusiasts, and researchers. Complete our multi-step
+                registration form to secure your pass and select your host
+                observation site.
               </p>
 
               <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">

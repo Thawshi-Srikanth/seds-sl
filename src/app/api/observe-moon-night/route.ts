@@ -56,11 +56,15 @@ export async function POST(req: Request) {
         | "observer"
         | "astrophotography";
       selectedLocation = (formData.get("selectedLocation") as string) || "";
-      emergencyContactName = (formData.get("emergencyContactName") as string) || "";
-      emergencyContactPhone = (formData.get("emergencyContactPhone") as string) || "";
-      emergencyContactRelation = (formData.get("emergencyContactRelation") as string) || "";
+      emergencyContactName =
+        (formData.get("emergencyContactName") as string) || "";
+      emergencyContactPhone =
+        (formData.get("emergencyContactPhone") as string) || "";
+      emergencyContactRelation =
+        (formData.get("emergencyContactRelation") as string) || "";
       mealPreference = (formData.get("mealPreference") as string) || "no-meal";
-      dietaryRestrictions = (formData.get("dietaryRestrictions") as string) || "";
+      dietaryRestrictions =
+        (formData.get("dietaryRestrictions") as string) || "";
       notes = (formData.get("notes") as string) || "";
       isPaidEvent = formData.get("isPaid") === "true";
       turnstileToken = (formData.get("turnstileToken") as string) || null;
@@ -119,9 +123,18 @@ export async function POST(req: Request) {
       }
     }
 
-    if (!fullName || !email || !institution || !emergencyContactName || !emergencyContactPhone) {
+    if (
+      !fullName ||
+      !email ||
+      !institution ||
+      !emergencyContactName ||
+      !emergencyContactPhone
+    ) {
       return NextResponse.json(
-        { error: "Full Name, Email, Institution, and Emergency Contact details are required." },
+        {
+          error:
+            "Full Name, Email, Institution, and Emergency Contact details are required.",
+        },
         { status: 400 },
       );
     }
@@ -144,7 +157,12 @@ export async function POST(req: Request) {
         emergencyContactName,
         emergencyContactPhone,
         emergencyContactRelation,
-        mealPreference,
+        mealPreference: mealPreference as
+          | "vegetarian"
+          | "non-vegetarian"
+          | "vegan"
+          | "no-meal"
+          | null,
         dietaryRestrictions,
         paymentSlip: paymentSlipMediaId || undefined,
         paymentStatus: isPaidEvent
@@ -165,33 +183,37 @@ export async function POST(req: Request) {
     let ticketPrice: string | undefined;
     let paymentDetails: string | undefined;
     let agenda: any[] | undefined;
+
     try {
-      const eventQuery = await payload.find({
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        collection: "observe-moon-events" as any,
+      const eventQueryResult = await payload.find({
+        collection: "observe-moon-events",
         where: {
-          year: {
-            equals: year,
+          slug: {
+            equals: eventSlug || "observe-the-moon-night-2026",
           },
         },
         limit: 1,
       });
 
-      if (eventQuery.docs[0]) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const eventDoc = eventQuery.docs[0] as any;
+      if (eventQueryResult.docs && eventQueryResult.docs.length > 0) {
+        const eventDoc: any = eventQueryResult.docs[0];
         cmsSubject = eventDoc.confirmationEmailSubject || undefined;
         cmsCustomMessage = eventDoc.confirmationEmailBody || undefined;
         eventDate = eventDoc.eventDate || undefined;
         eventTime = eventDoc.startTime
           ? `${eventDoc.startTime}${eventDoc.endTime ? ` - ${eventDoc.endTime}` : ""}`
           : undefined;
-        ticketPrice = eventDoc.ticketPrice || undefined;
+        ticketPrice = eventDoc.isPaid
+          ? eventDoc.ticketPrice || undefined
+          : undefined;
         paymentDetails = eventDoc.paymentDetails || undefined;
         agenda = eventDoc.agenda || undefined;
       }
     } catch (cmsErr) {
-      console.warn("Could not fetch event CMS email template settings:", cmsErr);
+      console.warn(
+        "Could not fetch event CMS email template settings:",
+        cmsErr,
+      );
     }
 
     // 1. Send Pending Verification Email to Participant (using Resend template observe-moon-night-registration-received)
@@ -201,7 +223,10 @@ export async function POST(req: Request) {
 
       let sentWithResendTemplate = false;
 
-      if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== "dummy_key_for_build") {
+      if (
+        process.env.RESEND_API_KEY &&
+        process.env.RESEND_API_KEY !== "dummy_key_for_build"
+      ) {
         try {
           const resend = new Resend(process.env.RESEND_API_KEY);
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -209,7 +234,7 @@ export async function POST(req: Request) {
             from: `${orgName} <${fromAddress}>`,
             to: email,
             subject: `We received your registration — Observe the Moon Night ${year}`,
-            // @ts-expect-error Resend SDK supports template parameter
+            // @ts-ignore Resend SDK supports template parameter
             template: {
               id: "observe-moon-night-registration-received",
               variables: {
@@ -223,10 +248,16 @@ export async function POST(req: Request) {
           if (resendResult.data && !resendResult.error) {
             sentWithResendTemplate = true;
           } else if (resendResult.error) {
-            console.warn("Resend participant template send error, falling back to payload email:", resendResult.error);
+            console.warn(
+              "Resend participant template send error, falling back to payload email:",
+              resendResult.error,
+            );
           }
         } catch (resendErr) {
-          console.warn("Resend participant template API send failed, falling back to HTML email:", resendErr);
+          console.warn(
+            "Resend participant template API send failed, falling back to HTML email:",
+            resendErr,
+          );
         }
       }
 
@@ -268,25 +299,34 @@ export async function POST(req: Request) {
       console.error("Failed to send participant pending email:", emailErr);
     }
 
-    // 2. Send Notification Email to Admin (using Resend template observe-the-moon-registration-amin)
+    // 2. Send Notification Email to Finance / Admin (using Resend template observe-the-moon-registration-amin)
     try {
-      const adminAddress = process.env.ADMIN_EMAIL || "info@seds-sl.org";
+      const financeAddress =
+        process.env.FINANCE_EMAIL ||
+        process.env.ADMIN_EMAIL ||
+        "finance@sedssl.org";
       const fromAddress = process.env.FROM_EMAIL || "info@seds-sl.org";
       const orgName = process.env.ORG_NAME || "SEDS Sri Lanka";
-      const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || process.env.WEBSITE_URL || "https://seds-sl.org";
-      const attachmentLink = `${baseUrl}/admin/collections/moon-registrations/${createdDoc.id}`;
+      const baseUrl =
+        process.env.NEXT_PUBLIC_SERVER_URL ||
+        process.env.WEBSITE_URL ||
+        "https://seds-sl.org";
+      const attachmentLink = `${baseUrl}/admin/verify-payments`;
 
       let sentWithResendTemplate = false;
 
-      if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== "dummy_key_for_build") {
+      if (
+        process.env.RESEND_API_KEY &&
+        process.env.RESEND_API_KEY !== "dummy_key_for_build"
+      ) {
         try {
           const resend = new Resend(process.env.RESEND_API_KEY);
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const resendResult: any = await resend.emails.send({
             from: `${orgName} <${fromAddress}>`,
-            to: adminAddress,
+            to: financeAddress,
             subject: `[NEW REGISTRATION] ${fullName} (${registrationCode}) - Moon Night ${year}`,
-            // @ts-expect-error Resend SDK supports template parameter
+            // @ts-ignore Resend SDK supports template parameter
             template: {
               id: "observe-the-moon-registration-amin",
               variables: {
@@ -300,7 +340,11 @@ export async function POST(req: Request) {
                 emergencyContactName: emergencyContactName || "N/A",
                 emergencyContactPhone: emergencyContactPhone || "N/A",
                 emergencyContactRelation: emergencyContactRelation || "N/A",
-                paymentStatus: isPaidEvent ? (paymentSlipMediaId ? "Pending Verification" : "Payment Required") : "Free Event",
+                paymentStatus: isPaidEvent
+                  ? paymentSlipMediaId
+                    ? "Pending Verification"
+                    : "Payment Required"
+                  : "Free Event",
                 attachmentLink,
               },
             },
@@ -309,10 +353,16 @@ export async function POST(req: Request) {
           if (resendResult.data && !resendResult.error) {
             sentWithResendTemplate = true;
           } else if (resendResult.error) {
-            console.warn("Resend template send error, falling back to payload email:", resendResult.error);
+            console.warn(
+              "Resend template send error, falling back to payload email:",
+              resendResult.error,
+            );
           }
         } catch (resendErr) {
-          console.warn("Resend template API send failed, falling back to HTML email:", resendErr);
+          console.warn(
+            "Resend template API send failed, falling back to HTML email:",
+            resendErr,
+          );
         }
       }
 
@@ -333,7 +383,6 @@ export async function POST(req: Request) {
           year,
           isPaidEvent,
           registrationId: registrationCode,
-          registrationDocId: createdDoc.id,
           cmsSubject,
           cmsCustomMessage,
           eventDate,
@@ -345,7 +394,7 @@ export async function POST(req: Request) {
         });
 
         await payload.sendEmail({
-          to: adminAddress,
+          to: financeAddress,
           subject: adminEmailData.subject,
           html: adminEmailData.html,
           text: adminEmailData.text,
@@ -358,7 +407,8 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         success: true,
-        message: "Registration submitted successfully! Your submission is pending verification.",
+        message:
+          "Registration submitted successfully! Your submission is pending verification.",
         registrationId: registrationCode,
         registrationCode,
       },

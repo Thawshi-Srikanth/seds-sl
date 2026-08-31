@@ -61,7 +61,8 @@ export default async function ObserveMoonNightAnnualRegisterPage({
             Observe the Moon Night {eventData.year} Registration
           </h1>
           <p className="text-sm md:text-base text-muted-foreground leading-relaxed max-w-2xl">
-            Please complete the multi-step registration form below to reserve your spot for International Observe the Moon Night {eventData.year}.
+            Please complete the multi-step registration form below to reserve
+            your spot for International Observe the Moon Night {eventData.year}.
           </p>
         </div>
 

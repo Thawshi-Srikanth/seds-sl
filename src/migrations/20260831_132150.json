@@ -18651,7 +18651,7 @@
     "public.enum_users_roles": {
       "name": "enum_users_roles",
       "schema": "public",
-      "values": ["admin", "customer"]
+      "values": ["admin", "finance", "customer"]
     },
     "public.enum_projects_hero_links_link_type": {
       "name": "enum_projects_hero_links_link_type",
@@ -19244,6 +19244,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "93c0f573-ea68-4992-b195-02499237ffe1",
+  "id": "71f9f9ee-a007-473a-addb-358938d056e7",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

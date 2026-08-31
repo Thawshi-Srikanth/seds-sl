@@ -51,14 +51,10 @@ const registrationSchema = z.object({
 
   // Step 5: Contact Info
   email: z.string().email("Please enter a valid email address"),
-  phone: z
-    .string()
-    .min(6, "Valid contact phone number is required"),
+  phone: z.string().min(6, "Valid contact phone number is required"),
 
   // Step 6: Emergency Contact
-  emergencyContactName: z
-    .string()
-    .min(2, "Emergency contact name is required"),
+  emergencyContactName: z.string().min(2, "Emergency contact name is required"),
   emergencyContactPhone: z
     .string()
     .min(6, "Valid emergency contact phone number is required"),
@@ -153,7 +149,10 @@ export function MoonNightRegistrationForm({
     if (isValid) {
       setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
       if (containerRef.current) {
-        containerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+        containerRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
       }
     } else {
       toast.error("Please fill in all required fields accurately.");
@@ -163,7 +162,10 @@ export function MoonNightRegistrationForm({
   const handlePrevStep = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
     if (containerRef.current) {
-      containerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      containerRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }
   };
 
@@ -188,7 +190,10 @@ export function MoonNightRegistrationForm({
       formData.append("equipment", data.equipment);
       formData.append("emergencyContactName", data.emergencyContactName);
       formData.append("emergencyContactPhone", data.emergencyContactPhone);
-      formData.append("emergencyContactRelation", data.emergencyContactRelation);
+      formData.append(
+        "emergencyContactRelation",
+        data.emergencyContactRelation,
+      );
       formData.append("mealPreference", data.mealPreference);
       formData.append("dietaryRestrictions", data.dietaryRestrictions || "");
       formData.append("notes", data.notes || "");
@@ -252,7 +257,8 @@ export function MoonNightRegistrationForm({
               </div>
             )}
             <p className="text-sm md:text-base text-slate-600 leading-relaxed font-mono">
-              Your registration has been received. We have sent a confirmation email to your inbox.
+              Your registration has been received. We have sent a confirmation
+              email to your inbox.
             </p>
           </div>
 
@@ -337,7 +343,10 @@ export function MoonNightRegistrationForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 max-w-4xl mx-auto">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-8 max-w-4xl mx-auto"
+    >
       {/* Main Form Box Surface with Corner Bleed Lines */}
       <div ref={containerRef} className="relative scroll-mt-28">
         <div className="absolute -left-4 -right-4 top-0 border-t border-slate-300 pointer-events-none" />
@@ -375,7 +384,8 @@ export function MoonNightRegistrationForm({
                       const isSelected = formValues.equipment === opt.id;
                       const Icon = opt.icon;
                       return (
-                        <div
+                        <button
+                          type="button"
                           key={opt.id}
                           onClick={() => setValue("equipment", opt.id)}
                           className={`relative p-5 border text-left transition-all duration-150 cursor-pointer flex flex-col justify-between space-y-4 rounded-none ${
@@ -399,12 +409,14 @@ export function MoonNightRegistrationForm({
                             <Icon className="size-5" />
                           </div>
                           <div>
-                            <div className="font-mono font-bold text-slate-900 text-sm uppercase">{opt.title}</div>
+                            <div className="font-mono font-bold text-slate-900 text-sm uppercase">
+                              {opt.title}
+                            </div>
                             <div className="text-xs text-slate-600 mt-1 leading-snug">
                               {opt.desc}
                             </div>
                           </div>
-                        </div>
+                        </button>
                       );
                     })}
                   </div>
@@ -441,7 +453,8 @@ export function MoonNightRegistrationForm({
                         formValues.selectedLocation === loc.name ||
                         (!formValues.selectedLocation && idx === 0);
                       return (
-                        <div
+                        <button
+                          type="button"
                           key={idx}
                           onClick={() => setValue("selectedLocation", loc.name)}
                           className={`relative p-5 border text-left transition-all duration-150 cursor-pointer flex flex-col justify-between space-y-3 rounded-none ${
@@ -456,12 +469,16 @@ export function MoonNightRegistrationForm({
                             </div>
                           )}
                           <div>
-                            <div className="font-mono font-bold text-slate-900 text-sm uppercase">{loc.name}</div>
+                            <div className="font-mono font-bold text-slate-900 text-sm uppercase">
+                              {loc.name}
+                            </div>
                             {loc.city && (
-                              <div className="text-xs text-slate-500 font-mono mt-1">{loc.city}</div>
+                              <div className="text-xs text-slate-500 font-mono mt-1">
+                                {loc.city}
+                              </div>
                             )}
                           </div>
-                        </div>
+                        </button>
                       );
                     })}
                   </div>
@@ -497,7 +514,8 @@ export function MoonNightRegistrationForm({
                       const isSelected = formValues.mealPreference === opt.id;
                       const Icon = opt.icon;
                       return (
-                        <div
+                        <button
+                          type="button"
                           key={opt.id}
                           onClick={() => setValue("mealPreference", opt.id)}
                           className={`relative p-5 border text-left transition-all duration-150 cursor-pointer flex flex-col justify-between space-y-4 rounded-none ${
@@ -521,12 +539,14 @@ export function MoonNightRegistrationForm({
                             <Icon className="size-5" />
                           </div>
                           <div>
-                            <div className="font-mono font-bold text-slate-900 text-sm uppercase">{opt.title}</div>
+                            <div className="font-mono font-bold text-slate-900 text-sm uppercase">
+                              {opt.title}
+                            </div>
                             <div className="text-xs text-slate-600 mt-1 leading-snug">
                               {opt.desc}
                             </div>
                           </div>
-                        </div>
+                        </button>
                       );
                     })}
                   </div>
@@ -564,7 +584,8 @@ export function MoonNightRegistrationForm({
                     Your Name & Organization
                   </h2>
                   <p className="text-sm md:text-base text-slate-600 leading-relaxed">
-                    Please enter your full name and university, school, or organization.
+                    Please enter your full name and university, school, or
+                    organization.
                   </p>
                 </div>
 
@@ -594,7 +615,8 @@ export function MoonNightRegistrationForm({
                       htmlFor="institution"
                       className="text-sm md:text-base font-mono font-extrabold uppercase tracking-wider text-slate-900"
                     >
-                      University / School / Organization <span className="text-blue-600">*</span>
+                      University / School / Organization{" "}
+                      <span className="text-blue-600">*</span>
                     </Label>
                     <Input
                       id="institution"
@@ -627,7 +649,8 @@ export function MoonNightRegistrationForm({
                     Your Email & Phone
                   </h2>
                   <p className="text-sm md:text-base text-slate-600 leading-relaxed">
-                    We will send your confirmation and ticket pass to this email.
+                    We will send your confirmation and ticket pass to this
+                    email.
                   </p>
                 </div>
 
@@ -702,7 +725,8 @@ export function MoonNightRegistrationForm({
                       htmlFor="emergencyContactName"
                       className="text-sm md:text-base font-mono font-extrabold uppercase tracking-wider text-slate-900"
                     >
-                      Emergency Contact Name <span className="text-blue-600">*</span>
+                      Emergency Contact Name{" "}
+                      <span className="text-blue-600">*</span>
                     </Label>
                     <Input
                       id="emergencyContactName"
@@ -723,13 +747,16 @@ export function MoonNightRegistrationForm({
                         htmlFor="emergencyContactPhone"
                         className="text-sm md:text-base font-mono font-extrabold uppercase tracking-wider text-slate-900"
                       >
-                        Emergency Phone Number <span className="text-blue-600">*</span>
+                        Emergency Phone Number{" "}
+                        <span className="text-blue-600">*</span>
                       </Label>
                       <PhoneInput
                         defaultCountry="LK"
                         international={true}
                         value={watch("emergencyContactPhone") || "+94"}
-                        onChange={(val) => setValue("emergencyContactPhone", val)}
+                        onChange={(val) =>
+                          setValue("emergencyContactPhone", val)
+                        }
                         className="bg-slate-50 border-slate-300 text-slate-900 focus-within:border-blue-600 focus-within:bg-white font-mono text-sm h-11 px-3 items-center rounded-none"
                       />
                       {errors.emergencyContactPhone && (
@@ -783,18 +810,24 @@ export function MoonNightRegistrationForm({
                 </div>
 
                 {/* ── Ticket ── */}
-                <div className="overflow-hidden rounded-2xl" style={{ background: "#0a0a0f" }}>
-
+                <div
+                  className="overflow-hidden rounded-2xl"
+                  style={{ background: "#0a0a0f" }}
+                >
                   {/* Ticket header */}
                   <div
                     className="relative px-6 py-5 flex items-center justify-between gap-4 overflow-hidden"
                     style={{
-                      background: "radial-gradient(ellipse at 80% 50%, #1a1a3e 0%, #0a0a0f 70%)",
+                      background:
+                        "radial-gradient(ellipse at 80% 50%, #1a1a3e 0%, #0a0a0f 70%)",
                       borderBottom: "1px dashed rgba(255,255,255,0.15)",
                     }}
                   >
                     {/* Star dots */}
-                    <div className="absolute inset-0 pointer-events-none" aria-hidden>
+                    <div
+                      className="absolute inset-0 pointer-events-none"
+                      aria-hidden
+                    >
                       {[
                         { top: "12%", left: "8%", size: 1.5 },
                         { top: "60%", left: "15%", size: 1 },
@@ -808,7 +841,12 @@ export function MoonNightRegistrationForm({
                         <span
                           key={i}
                           className="absolute rounded-full bg-white opacity-60"
-                          style={{ top: s.top, left: s.left, width: s.size, height: s.size }}
+                          style={{
+                            top: s.top,
+                            left: s.left,
+                            width: s.size,
+                            height: s.size,
+                          }}
                         />
                       ))}
                     </div>
@@ -820,7 +858,9 @@ export function MoonNightRegistrationForm({
                       <p className="text-xl md:text-2xl font-black font-mono leading-tight text-white tracking-tight">
                         {formValues.fullName || "—"}
                       </p>
-                      <p className="text-xs text-slate-400 font-mono">{formValues.institution || "—"}</p>
+                      <p className="text-xs text-slate-400 font-mono">
+                        {formValues.institution || "—"}
+                      </p>
                     </div>
 
                     {/* Moon logo */}
@@ -832,34 +872,60 @@ export function MoonNightRegistrationForm({
                   </div>
 
                   {/* Perforated tear line */}
-                  <div className="relative h-0" style={{ borderTop: "1.5px dashed rgba(255,255,255,0.18)" }}>
+                  <div
+                    className="relative h-0"
+                    style={{ borderTop: "1.5px dashed rgba(255,255,255,0.18)" }}
+                  >
                     <span className="absolute -left-3 -top-3 size-6 rounded-full inline-block bg-white" />
                     <span className="absolute -right-3 -top-3 size-6 rounded-full inline-block bg-white" />
                   </div>
 
                   {/* Ticket body */}
                   <div className="flex flex-col sm:flex-row">
-
                     {/* Main fields */}
                     <div className="flex-1 px-6 py-5 grid grid-cols-2 gap-x-6 gap-y-5">
                       {[
                         { label: "Email", value: formValues.email },
                         { label: "Phone", value: formValues.phone },
-                        { label: "Location", value: formValues.selectedLocation },
-                        { label: "Equipment", value: getEquipmentTitle(formValues.equipment) },
-                        { label: "Meal", value: getMealTitle(formValues.mealPreference) },
+                        {
+                          label: "Location",
+                          value: formValues.selectedLocation,
+                        },
+                        {
+                          label: "Equipment",
+                          value: getEquipmentTitle(formValues.equipment),
+                        },
+                        {
+                          label: "Meal",
+                          value: getMealTitle(formValues.mealPreference),
+                        },
                         { label: "Attendance", value: "In-Person" },
                       ].map((f) => (
                         <div key={f.label}>
-                          <p className="text-[9px] font-mono font-bold uppercase tracking-widest mb-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>{f.label}</p>
-                          <p className="text-xs font-bold font-mono leading-snug break-all" style={{ color: "rgba(255,255,255,0.85)" }}>{f.value || "—"}</p>
+                          <p
+                            className="text-[9px] font-mono font-bold uppercase tracking-widest mb-0.5"
+                            style={{ color: "rgba(255,255,255,0.35)" }}
+                          >
+                            {f.label}
+                          </p>
+                          <p
+                            className="text-xs font-bold font-mono leading-snug break-all"
+                            style={{ color: "rgba(255,255,255,0.85)" }}
+                          >
+                            {f.value || "—"}
+                          </p>
                         </div>
                       ))}
                     </div>
 
                     {/* Vertical dashed divider */}
                     <div className="hidden sm:flex flex-col items-center">
-                      <div className="relative w-0 h-full" style={{ borderLeft: "1.5px dashed rgba(255,255,255,0.18)" }}>
+                      <div
+                        className="relative w-0 h-full"
+                        style={{
+                          borderLeft: "1.5px dashed rgba(255,255,255,0.18)",
+                        }}
+                      >
                         <span className="absolute -top-3 -left-3 size-6 rounded-full inline-block bg-white" />
                         <span className="absolute -bottom-3 -left-3 size-6 rounded-full inline-block bg-white" />
                       </div>
@@ -871,10 +937,30 @@ export function MoonNightRegistrationForm({
                       style={{ background: "rgba(255,255,255,0.03)" }}
                     >
                       <div className="space-y-1">
-                        <p className="text-[9px] font-mono font-bold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.35)" }}>Emergency</p>
-                        <p className="text-xs font-black font-mono leading-snug" style={{ color: "rgba(255,255,255,0.85)" }}>{formValues.emergencyContactName || "—"}</p>
-                        <p className="text-[10px] font-mono" style={{ color: "rgba(255,255,255,0.45)" }}>{formValues.emergencyContactRelation || "—"}</p>
-                        <p className="text-[10px] font-mono" style={{ color: "rgba(255,255,255,0.55)" }}>{formValues.emergencyContactPhone || "—"}</p>
+                        <p
+                          className="text-[9px] font-mono font-bold uppercase tracking-widest"
+                          style={{ color: "rgba(255,255,255,0.35)" }}
+                        >
+                          Emergency
+                        </p>
+                        <p
+                          className="text-xs font-black font-mono leading-snug"
+                          style={{ color: "rgba(255,255,255,0.85)" }}
+                        >
+                          {formValues.emergencyContactName || "—"}
+                        </p>
+                        <p
+                          className="text-[10px] font-mono"
+                          style={{ color: "rgba(255,255,255,0.45)" }}
+                        >
+                          {formValues.emergencyContactRelation || "—"}
+                        </p>
+                        <p
+                          className="text-[10px] font-mono"
+                          style={{ color: "rgba(255,255,255,0.55)" }}
+                        >
+                          {formValues.emergencyContactPhone || "—"}
+                        </p>
                       </div>
 
                       {/* Barcode strip */}
@@ -885,11 +971,21 @@ export function MoonNightRegistrationForm({
                             className="h-[3px]"
                             style={{
                               width: `${w * 9}%`,
-                              background: i % 3 === 0 ? "rgba(255,255,255,0.7)" : i % 3 === 1 ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.55)",
+                              background:
+                                i % 3 === 0
+                                  ? "rgba(255,255,255,0.7)"
+                                  : i % 3 === 1
+                                    ? "rgba(255,255,255,0.4)"
+                                    : "rgba(255,255,255,0.55)",
                             }}
                           />
                         ))}
-                        <p className="text-[8px] font-mono tracking-widest pt-1 uppercase" style={{ color: "rgba(255,255,255,0.25)" }}>SEDS · OBS PASS</p>
+                        <p
+                          className="text-[8px] font-mono tracking-widest pt-1 uppercase"
+                          style={{ color: "rgba(255,255,255,0.25)" }}
+                        >
+                          SEDS · OBS PASS
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -944,15 +1040,23 @@ export function MoonNightRegistrationForm({
                       <div className="absolute -top-4 -bottom-4 left-0 border-l border-slate-300 pointer-events-none" />
                       <div className="absolute -top-4 -bottom-4 right-0 border-r border-slate-300 pointer-events-none" />
 
-                      <div className="overflow-hidden" style={{ background: "#0a0a0f" }}>
+                      <div
+                        className="overflow-hidden"
+                        style={{ background: "#0a0a0f" }}
+                      >
                         {/* Amount header */}
                         {eventData?.ticketPrice && (
                           <div
                             className="px-6 py-4 flex items-center justify-between gap-4"
-                            style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+                            style={{
+                              borderBottom: "1px solid rgba(255,255,255,0.08)",
+                            }}
                           >
                             <div>
-                              <p className="text-[10px] font-mono font-bold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>
+                              <p
+                                className="text-[10px] font-mono font-bold uppercase tracking-widest"
+                                style={{ color: "rgba(255,255,255,0.4)" }}
+                              >
                                 Amount Due
                               </p>
                               <p className="text-2xl font-black font-mono text-white tracking-tight mt-0.5">
@@ -961,7 +1065,10 @@ export function MoonNightRegistrationForm({
                             </div>
                             <div
                               className="px-3 py-1 text-[10px] font-mono font-bold uppercase tracking-widest"
-                              style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.5)" }}
+                              style={{
+                                background: "rgba(255,255,255,0.08)",
+                                color: "rgba(255,255,255,0.5)",
+                              }}
                             >
                               Bank Transfer
                             </div>
@@ -972,10 +1079,15 @@ export function MoonNightRegistrationForm({
                         {eventData?.bankAccountNumber && (
                           <div
                             className="px-6 py-4 flex items-center justify-between gap-3"
-                            style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}
+                            style={{
+                              borderBottom: "1px solid rgba(255,255,255,0.08)",
+                            }}
                           >
                             <div className="min-w-0">
-                              <p className="text-[9px] font-mono font-bold uppercase tracking-widest mb-1" style={{ color: "rgba(255,255,255,0.35)" }}>
+                              <p
+                                className="text-[9px] font-mono font-bold uppercase tracking-widest mb-1"
+                                style={{ color: "rgba(255,255,255,0.35)" }}
+                              >
                                 Account Number
                               </p>
                               <p className="text-sm font-mono font-bold tracking-widest text-white truncate">
@@ -985,20 +1097,30 @@ export function MoonNightRegistrationForm({
                             <button
                               type="button"
                               onClick={() => {
-                                navigator.clipboard.writeText(eventData.bankAccountNumber || "");
+                                navigator.clipboard.writeText(
+                                  eventData.bankAccountNumber || "",
+                                );
                                 setCopiedAccount(true);
                                 setTimeout(() => setCopiedAccount(false), 2000);
                               }}
                               className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-mono font-bold uppercase tracking-widest transition-all"
                               style={{
-                                background: copiedAccount ? "rgba(34,197,94,0.15)" : "rgba(255,255,255,0.08)",
-                                color: copiedAccount ? "rgba(134,239,172,0.9)" : "rgba(255,255,255,0.5)",
+                                background: copiedAccount
+                                  ? "rgba(34,197,94,0.15)"
+                                  : "rgba(255,255,255,0.08)",
+                                color: copiedAccount
+                                  ? "rgba(134,239,172,0.9)"
+                                  : "rgba(255,255,255,0.5)",
                               }}
                             >
                               {copiedAccount ? (
-                                <><Check className="size-3" /> Copied</>
+                                <>
+                                  <Check className="size-3" /> Copied
+                                </>
                               ) : (
-                                <><Copy className="size-3" /> Copy</>
+                                <>
+                                  <Copy className="size-3" /> Copy
+                                </>
                               )}
                             </button>
                           </div>
@@ -1030,7 +1152,8 @@ export function MoonNightRegistrationForm({
                         htmlFor="paymentSlip"
                         className="text-xs font-mono font-extrabold uppercase tracking-wider text-slate-900"
                       >
-                        Upload Payment Receipt <span className="text-blue-600">*</span>
+                        Upload Payment Receipt{" "}
+                        <span className="text-blue-600">*</span>
                       </Label>
 
                       <label
@@ -1047,9 +1170,12 @@ export function MoonNightRegistrationForm({
                               <FileCheck2 className="size-5 text-blue-600" />
                             </div>
                             <div className="text-center">
-                              <p className="text-sm font-bold font-mono text-slate-900">{paymentFile.name}</p>
+                              <p className="text-sm font-bold font-mono text-slate-900">
+                                {paymentFile.name}
+                              </p>
                               <p className="text-xs text-slate-500 font-mono mt-0.5">
-                                {(paymentFile.size / 1024).toFixed(1)} KB · Ready to upload
+                                {(paymentFile.size / 1024).toFixed(1)} KB ·
+                                Ready to upload
                               </p>
                             </div>
                             <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-blue-600">
@@ -1115,7 +1241,8 @@ export function MoonNightRegistrationForm({
                       htmlFor="termsAccepted"
                       className="text-xs text-slate-700 leading-relaxed cursor-pointer font-sans"
                     >
-                      I agree to follow the event safety guidelines and site rules.
+                      I agree to follow the event safety guidelines and site
+                      rules.
                     </Label>
                   </div>
                   {errors.termsAccepted && (
@@ -1128,8 +1255,12 @@ export function MoonNightRegistrationForm({
                 {/* Turnstile */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-2 border-t border-slate-100">
                   <div>
-                    <p className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">Bot Verification</p>
-                    <p className="text-xs text-slate-400 font-mono mt-0.5">Powered by Cloudflare Turnstile</p>
+                    <p className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900">
+                      Bot Verification
+                    </p>
+                    <p className="text-xs text-slate-400 font-mono mt-0.5">
+                      Powered by Cloudflare Turnstile
+                    </p>
                   </div>
                   <Turnstile
                     theme="light"

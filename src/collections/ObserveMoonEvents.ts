@@ -131,7 +131,8 @@ export const ObserveMoonEvents: CollectionConfig = {
     {
       name: "bankAccountNumber",
       type: "text",
-      label: "Bank Account Number (shown as copyable field on registration form)",
+      label:
+        "Bank Account Number (shown as copyable field on registration form)",
       admin: {
         condition: (data) => Boolean(data?.isPaid),
       },
