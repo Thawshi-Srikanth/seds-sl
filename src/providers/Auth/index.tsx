@@ -12,22 +12,21 @@ import React, {
   useState,
 } from "react";
 
-// eslint-disable-next-line no-unused-vars
 type ResetPassword = (args: {
   password: string;
   passwordConfirm: string;
   token: string;
 }) => Promise<void>;
 
-type ForgotPassword = (args: { email: string }) => Promise<void>; // eslint-disable-line no-unused-vars
+type ForgotPassword = (args: { email: string }) => Promise<void>;
 
 type Create = (args: {
   email: string;
   password: string;
   passwordConfirm: string;
-}) => Promise<void>; // eslint-disable-line no-unused-vars
+}) => Promise<void>;
 
-type Login = (args: { email: string; password: string }) => Promise<User>; // eslint-disable-line no-unused-vars
+type Login = (args: { email: string; password: string }) => Promise<User>;
 
 type Logout = () => Promise<void>;
 
@@ -37,7 +36,7 @@ type AuthContext = {
   login: Login;
   logout: Logout;
   resetPassword: ResetPassword;
-  setUser: (user: User | null) => void; // eslint-disable-line no-unused-vars
+  setUser: (user: User | null) => void;
   status: "loggedIn" | "loggedOut" | undefined;
   user?: User | null;
 };
@@ -45,25 +44,21 @@ type AuthContext = {
 const Context = createContext({} as AuthContext);
 
 const identifyUser = (user: User) => {
-  if (!Number.isInteger(user.id)) {
-    throw new Error("Authenticated user is missing a stable ID");
+  if (user?.id) {
+    posthog.identify(String(user.id), {
+      email: user.email,
+      name: user.name ?? undefined,
+      roles: user.roles ?? undefined,
+    });
   }
-
-  posthog.identify(String(user.id), {
-    email: user.email,
-    name: user.name ?? undefined,
-    roles: user.roles ?? undefined,
-  });
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User | null>();
-
-  // used to track the single event of logging in or logging out
-  // useful for `useEffect` hooks that should only run once
+  const [user, setUser] = useState<User | null>(null);
   const [status, setStatus] = useState<"loggedIn" | "loggedOut" | undefined>();
+
   const create = useCallback<Create>(async (args) => {
     try {
       const res = await fetch(`${getClientSideURL()}/api/users/create`, {
@@ -141,9 +136,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         posthog.reset();
         setUser(null);
         setStatus("loggedOut");
-        try {
-          sessionStorage.removeItem("seds_user");
-        } catch (_) {}
       } else {
         throw new Error("An error occurred while attempting to logout.");
       }
@@ -154,34 +146,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     const fetchMe = async () => {
-      // Avoid unnecessary edge requests for guest visitors without auth cookies
-      const hasAuthCookie = document.cookie
-        .split(";")
-        .some(
-          (item) =>
-            item.trim().startsWith("payload-token=") ||
-            item.trim().startsWith("users-token="),
-        );
-
-      if (!hasAuthCookie) {
-        setUser(null);
-        setStatus(undefined);
-        try {
-          sessionStorage.removeItem("seds_user");
-        } catch (_) {}
-        return;
-      }
-
-      // Check session storage first for instant load
-      try {
-        const cachedUser = sessionStorage.getItem("seds_user");
-        if (cachedUser) {
-          const parsed = JSON.parse(cachedUser);
-          setUser(parsed);
-          setStatus("loggedIn");
-        }
-      } catch (_) {}
-
       try {
         const res = await fetch(`${getClientSideURL()}/api/users/me`, {
           credentials: "include",
@@ -196,23 +160,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           setUser(meUser || null);
           if (meUser) {
             identifyUser(meUser);
-            try {
-              sessionStorage.setItem("seds_user", JSON.stringify(meUser));
-            } catch (_) {}
+            setStatus("loggedIn");
           } else {
-            try {
-              sessionStorage.removeItem("seds_user");
-            } catch (_) {}
+            setStatus("loggedOut");
           }
-          setStatus(meUser ? "loggedIn" : undefined);
         } else {
           setUser(null);
-          try {
-            sessionStorage.removeItem("seds_user");
-          } catch (_) {}
+          setStatus("loggedOut");
         }
       } catch (e) {
         setUser(null);
+        setStatus("loggedOut");
       }
     };
 
@@ -300,6 +258,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-type UseAuth<T = User> = () => AuthContext; // eslint-disable-line no-unused-vars
+type UseAuth<T = User> = () => AuthContext;
 
 export const useAuth: UseAuth = () => useContext(Context);

@@ -24,6 +24,10 @@ export const Users: CollectionConfig = {
   },
   auth: {
     tokenExpiration: 1209600,
+    cookies: {
+      sameSite: "Lax",
+      secure: process.env.NODE_ENV === "production",
+    },
   },
   fields: [
     {
