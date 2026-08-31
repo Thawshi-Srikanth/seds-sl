@@ -24,6 +24,9 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(getServerSideURL()),
+  alternates: {
+    canonical: "./",
+  },
   title: "SEDS SL",
   description:
     "Students for the Exploration & Development of Space (SEDS), Sri Lanka.",
