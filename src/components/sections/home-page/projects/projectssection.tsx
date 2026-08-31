@@ -61,7 +61,7 @@ const ProjectCard = ({
             </span>
           </div>
 
-          <Link href={targetLink}>
+          <Link href={targetLink} prefetch={false}>
             <Button variant="outline" size="sm" bleed={true}>
               Know More
             </Button>
@@ -130,6 +130,7 @@ export function ProjectsSection({
               >
                 <Link
                   href="/projects"
+                  prefetch={false}
                   className="block h-full group bg-background p-8 flex items-center justify-center"
                 >
                   <div className="flex flex-col items-center justify-center text-center">

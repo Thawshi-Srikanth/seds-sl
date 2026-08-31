@@ -99,6 +99,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/chapters"
+                  prefetch={false}
                   className="text-muted-foreground hover:text-primary text-sm transition-colors flex items-center group font-mono"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-primary/50 mr-2 group-hover:bg-primary transition-colors" />
@@ -108,6 +109,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/projects"
+                  prefetch={false}
                   className="text-muted-foreground hover:text-primary text-sm transition-colors flex items-center group font-mono"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-primary/50 mr-2 group-hover:bg-primary transition-colors" />
@@ -117,6 +119,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/shop"
+                  prefetch={false}
                   className="text-muted-foreground hover:text-primary text-sm transition-colors flex items-center group font-mono"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-primary/50 mr-2 group-hover:bg-primary transition-colors" />
@@ -135,6 +138,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/about"
+                  prefetch={false}
                   className="text-muted-foreground hover:text-primary text-sm transition-colors flex items-center group font-mono"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-primary/50 mr-2 group-hover:bg-primary transition-colors" />
@@ -144,6 +148,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/divisions"
+                  prefetch={false}
                   className="text-muted-foreground hover:text-primary text-sm transition-colors flex items-center group font-mono"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-primary/50 mr-2 group-hover:bg-primary transition-colors" />
@@ -153,6 +158,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/contact-us"
+                  prefetch={false}
                   className="text-muted-foreground hover:text-primary text-sm transition-colors flex items-center group font-mono"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-primary/50 mr-2 group-hover:bg-primary transition-colors" />
@@ -162,6 +168,7 @@ export default function Footer() {
               <li>
                 <Link
                   href="/join-us"
+                  prefetch={false}
                   className="text-muted-foreground hover:text-primary text-sm transition-colors flex items-center group font-mono"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-primary/50 mr-2 group-hover:bg-primary transition-colors" />
@@ -200,6 +207,7 @@ export default function Footer() {
           <div className="flex items-center gap-4">
             <Link
               href="/privacy"
+              prefetch={false}
               className="hover:text-primary transition-colors"
             >
               Privacy Policy
@@ -207,6 +215,7 @@ export default function Footer() {
             <span>•</span>
             <Link
               href="/terms"
+              prefetch={false}
               className="hover:text-primary transition-colors"
             >
               Terms of Service

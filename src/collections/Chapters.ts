@@ -16,6 +16,11 @@ import {
   InlineToolbarFeature,
 } from "@payloadcms/richtext-lexical";
 
+import {
+  revalidateCollection,
+  revalidateCollectionDelete,
+} from "@/utilities/revalidateCollection";
+
 interface ChapterData {
   name?: string;
   slug?: string;
@@ -38,6 +43,8 @@ export const Chapters: CollectionConfig = {
     read: () => true,
   },
   hooks: {
+    afterChange: [revalidateCollection("chapters")],
+    afterDelete: [revalidateCollectionDelete("chapters")],
     beforeValidate: [
       async ({ data, req }) => {
         const typedData = data as ChapterData;

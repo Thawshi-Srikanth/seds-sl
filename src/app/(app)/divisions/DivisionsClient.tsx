@@ -152,7 +152,7 @@ export function DivisionsClient({
                   </p>
 
                   <div className="mt-auto pt-4 border-t border-border/50 flex justify-end">
-                    <Link href={`/divisions/${division.slug}`}>
+                    <Link href={`/divisions/${division.slug}`} prefetch={false}>
                       <Button
                         variant="outline"
                         size="sm"

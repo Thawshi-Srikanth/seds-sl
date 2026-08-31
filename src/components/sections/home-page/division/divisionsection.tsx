@@ -117,7 +117,10 @@ const DivisionsSection = ({
                           bleed={true}
                           asChild
                         >
-                          <Link href={`/divisions/${division.slug}`}>
+                          <Link
+                            href={`/divisions/${division.slug}`}
+                            prefetch={false}
+                          >
                             Learn More
                           </Link>
                         </Button>
@@ -137,6 +140,7 @@ const DivisionsSection = ({
               >
                 <Link
                   href="/divisions"
+                  prefetch={false}
                   className="block h-full group bg-background p-8 flex items-center justify-center"
                 >
                   <div className="flex flex-col items-center justify-center text-center">

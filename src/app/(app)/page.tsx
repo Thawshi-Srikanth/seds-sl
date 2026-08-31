@@ -11,7 +11,7 @@ import { fetchChapters } from "@/actions/chapters";
 import { fetchProjects, type UnifiedProjectItem } from "@/actions/projects";
 import type { Chapter, Division } from "@/payload-types";
 
-export const revalidate = 60; // Revalidate every 60 seconds
+export const revalidate = 86400; // Revalidate every 24 hours (On-Demand revalidation via Payload hooks)
 
 export default async function Home() {
   let divisions: Division[] = [];

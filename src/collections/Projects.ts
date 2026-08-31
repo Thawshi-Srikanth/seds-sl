@@ -18,6 +18,11 @@ import {
   PreviewField,
 } from "@payloadcms/plugin-seo/fields";
 import { adminOrPublishedStatus } from "@/access/adminOrPublishedStatus";
+import {
+  revalidateCollection,
+  revalidateCollectionDelete,
+} from "@/utilities/revalidateCollection";
+
 interface ProjectData {
   name?: string;
   slug?: string;
@@ -61,6 +66,8 @@ export const Projects: CollectionConfig = {
     maxPerDoc: 50,
   },
   hooks: {
+    afterChange: [revalidateCollection("projects")],
+    afterDelete: [revalidateCollectionDelete("projects")],
     beforeValidate: [
       async ({ data, req }) => {
         const typedData = data as ProjectData;
