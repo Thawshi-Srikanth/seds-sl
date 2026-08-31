@@ -47,6 +47,17 @@ export function Turnstile({
   const [loaded, setLoaded] = useState(false);
   const id = useId().replace(/:/g, "_");
 
+  // Store callbacks in refs to prevent re-triggering useEffect on parent re-renders
+  const onVerifyRef = useRef(onVerify);
+  const onErrorRef = useRef(onError);
+  const onExpireRef = useRef(onExpire);
+
+  useEffect(() => {
+    onVerifyRef.current = onVerify;
+    onErrorRef.current = onError;
+    onExpireRef.current = onExpire;
+  });
+
   const alignClass =
     align === "center"
       ? "justify-center"
@@ -83,13 +94,13 @@ export function Turnstile({
           const widgetId = window.turnstile.render(containerRef.current, {
             sitekey: siteKey,
             callback: (token: string) => {
-              onVerify(token);
+              onVerifyRef.current?.(token);
             },
             "error-callback": () => {
-              onError?.();
+              onErrorRef.current?.();
             },
             "expired-callback": () => {
-              onExpire?.();
+              onExpireRef.current?.();
             },
             theme,
           });
@@ -120,7 +131,7 @@ export function Turnstile({
         } catch (_) {}
       }
     };
-  }, [siteKey, theme, onVerify, onError, onExpire]);
+  }, [siteKey, theme]);
 
   return (
     <div className={className || `my-2 flex ${alignClass}`}>

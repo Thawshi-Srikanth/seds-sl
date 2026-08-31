@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Mail, MapPin } from "lucide-react";
 import {
+  FaCloudflare,
   FaFacebook,
   FaInstagram,
   FaLinkedin,
@@ -202,8 +203,25 @@ export default function Footer() {
         </div>
 
         {/* Bottom copyright sub-bar */}
-        <div className="py-6 flex flex-col sm:flex-row items-center justify-between text-xs text-muted-foreground font-mono gap-3">
+        <div className="py-6 flex flex-col md:flex-row items-center justify-between text-xs text-muted-foreground font-mono gap-4">
           <p>© {currentYear} SEDS Sri Lanka. All rights reserved.</p>
+
+          {/* Protected by Cloudflare Badge */}
+          <a
+            href="https://www.cloudflare.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-3 py-1.5 bg-muted/20 border border-border/60 hover:border-primary/50 text-xs font-mono text-muted-foreground hover:text-foreground transition-all rounded-sm group"
+          >
+            <FaCloudflare className="size-4 text-[#F38020] group-hover:scale-110 transition-transform" />
+            <span>
+              Protected by{" "}
+              <strong className="font-bold text-foreground tracking-tight">
+                Cloudflare
+              </strong>
+            </span>
+          </a>
+
           <div className="flex items-center gap-4">
             <Link
               href="/privacy"
