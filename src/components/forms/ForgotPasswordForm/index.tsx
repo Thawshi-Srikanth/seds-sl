@@ -86,8 +86,8 @@ export const ForgotPasswordForm: React.FC = () => {
               </FormItem>
             </div>
 
-            <div className="py-1 flex justify-center">
-              <Turnstile onVerify={(token) => setTurnstileToken(token)} />
+            <div className="py-1 flex justify-start">
+              <Turnstile align="left" onVerify={(token) => setTurnstileToken(token)} />
             </div>
 
             <div className="pt-2 space-y-4">

@@ -486,9 +486,18 @@ export function MoonNightRegistrationForm({
           </div>
 
           {/* Turnstile Bot Protection */}
-          <div className="p-4 bg-white border-t border-slate-200 flex justify-center">
+          <div className="p-6 bg-white border-t border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="space-y-1">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-900 block">
+                Secured by Cloudflare
+              </span>
+              <p className="text-xs text-slate-600 font-sans">
+                Turnstile Bot Protection
+              </p>
+            </div>
             <Turnstile
               theme="light"
+              align="left"
               onVerify={(token) => setTurnstileToken(token)}
             />
           </div>

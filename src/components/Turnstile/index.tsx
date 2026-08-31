@@ -30,6 +30,7 @@ interface TurnstileProps {
   onError?: () => void;
   onExpire?: () => void;
   theme?: "light" | "dark" | "auto";
+  align?: "left" | "center" | "right";
   className?: string;
 }
 
@@ -38,12 +39,20 @@ export function Turnstile({
   onError,
   onExpire,
   theme = "dark",
+  align = "left",
   className,
 }: TurnstileProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   const id = useId().replace(/:/g, "_");
+
+  const alignClass =
+    align === "center"
+      ? "justify-center"
+      : align === "right"
+        ? "justify-end"
+        : "justify-start";
 
   const siteKey =
     process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY ||
@@ -114,7 +123,7 @@ export function Turnstile({
   }, [siteKey, theme, onVerify, onError, onExpire]);
 
   return (
-    <div className={className || "my-3 flex justify-center"}>
+    <div className={className || `my-2 flex ${alignClass}`}>
       <div ref={containerRef} id={`turnstile_${id}`} />
     </div>
   );

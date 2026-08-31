@@ -240,8 +240,19 @@ export const ContactFormCodeBased: React.FC = () => {
           </div>
 
           {/* Turnstile Bot Protection */}
-          <div className="p-2 flex justify-center bg-background border-t border-border/40">
-            <Turnstile onVerify={(token) => setTurnstileToken(token)} />
+          <div className="p-4 md:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-background border-t border-border/60">
+            <div className="space-y-1">
+              <span className="text-xs uppercase tracking-wider font-mono font-bold text-foreground block">
+                Secured by Cloudflare
+              </span>
+              <p className="text-xs text-muted-foreground font-mono">
+                Smart Turnstile Bot Protection
+              </p>
+            </div>
+            <Turnstile
+              align="left"
+              onVerify={(token) => setTurnstileToken(token)}
+            />
           </div>
 
           {/* Row 5: Checkbox & Submit Button Side-by-Side in Bottom Grid Cell */}

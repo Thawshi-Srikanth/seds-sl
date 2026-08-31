@@ -189,8 +189,8 @@ export const FormBlock: React.FC<
                   })}
               </div>
 
-              <div className="my-3 flex justify-center">
-                <Turnstile onVerify={(token) => setTurnstileToken(token)} />
+              <div className="my-3 flex justify-start">
+                <Turnstile align="left" onVerify={(token) => setTurnstileToken(token)} />
               </div>
 
               <Button
