@@ -145,12 +145,7 @@ export function ObserveMoonHero({
               transition={{ duration: 0.6, delay: 0.4 }}
               className="flex flex-wrap items-center gap-4 pt-4"
             >
-              <Button
-                asChild
-                variant="default"
-                size="lg"
-                bleed={true}
-              >
+              <Button asChild variant="default" size="lg" bleed={true}>
                 <Link
                   href={
                     slug
