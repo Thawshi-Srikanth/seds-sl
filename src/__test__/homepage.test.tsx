@@ -1,5 +1,25 @@
-import { render, screen, within } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+// @vitest-environment jsdom
+// @ts-ignore
+import { JSDOM } from "jsdom";
+
+const dom = new JSDOM("<!DOCTYPE html><html><body></body></html>", {
+  url: "http://localhost:3000",
+});
+// @ts-ignore
+globalThis.window = dom.window;
+// @ts-ignore
+globalThis.document = dom.window.document;
+// @ts-ignore
+globalThis.navigator = dom.window.navigator;
+// @ts-ignore
+globalThis.HTMLElement = dom.window.HTMLElement;
+// @ts-ignore
+globalThis.Element = dom.window.Element;
+// @ts-ignore
+globalThis.Node = dom.window.Node;
+
+const { render, screen, within } = await import("@testing-library/react");
+const { describe, it, expect, vi } = await import("vitest");
 
 // Mock the entire space-scene component to avoid Three.js issues
 vi.mock("@/components/sections/home-page/section-one/space-scene", () => ({
