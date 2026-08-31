@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Turnstile } from "@/components/Turnstile";
 
 const contactSchema = z.object({
   firstName: z.string().min(2, "First name is required"),
@@ -33,6 +34,7 @@ export type ContactFormValues = z.infer<typeof contactSchema>;
 
 export const ContactFormCodeBased: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
 
   const {
     register,
@@ -65,6 +67,7 @@ export const ContactFormCodeBased: React.FC = () => {
           email: data.email,
           reasons: [data.reason],
           message: data.message,
+          turnstileToken,
         }),
       });
 
@@ -234,6 +237,11 @@ export const ContactFormCodeBased: React.FC = () => {
                 {errors.message.message}
               </p>
             )}
+          </div>
+
+          {/* Turnstile Bot Protection */}
+          <div className="p-2 flex justify-center bg-background border-t border-border/40">
+            <Turnstile onVerify={(token) => setTurnstileToken(token)} />
           </div>
 
           {/* Row 5: Checkbox & Submit Button Side-by-Side in Bottom Grid Cell */}

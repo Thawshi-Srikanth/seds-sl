@@ -13,6 +13,7 @@ import { buildInitialFormState } from "./buildInitialFormState";
 import { fields } from "./fields";
 import { getClientSideURL } from "@/utilities/getURL";
 import type { DefaultDocumentIDType } from "payload";
+import { Turnstile } from "@/components/Turnstile";
 import posthog from "posthog-js";
 
 export type Value = unknown;
@@ -142,6 +143,8 @@ export const FormBlock: React.FC<
     [router, formID, redirect, confirmationType],
   );
 
+  const [turnstileToken, setTurnstileToken] = useState("");
+
   return (
     <div className="container lg:max-w-[48rem]">
       {enableIntro && introContent && !hasSubmitted && (
@@ -184,6 +187,10 @@ export const FormBlock: React.FC<
                     }
                     return null;
                   })}
+              </div>
+
+              <div className="my-3 flex justify-center">
+                <Turnstile onVerify={(token) => setTurnstileToken(token)} />
               </div>
 
               <Button

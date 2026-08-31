@@ -3,6 +3,8 @@ import { Resend } from "resend";
 import { z } from "zod";
 import { contactFormSchema } from "@/lib/schemas/contact";
 
+import { verifyTurnstileToken } from "@/utilities/verifyTurnstile";
+
 const resend = new Resend(process.env.RESEND_API_KEY || "dummy_key_for_build");
 
 // Email configuration from environment variables
@@ -27,6 +29,16 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+
+    if (body.turnstileToken) {
+      const turnstileResult = await verifyTurnstileToken(body.turnstileToken);
+      if (!turnstileResult.success) {
+        return NextResponse.json(
+          { error: turnstileResult.error || "Bot verification failed" },
+          { status: 400 },
+        );
+      }
+    }
 
     // Validate the request body
     const validatedData = contactFormSchema.parse(body);

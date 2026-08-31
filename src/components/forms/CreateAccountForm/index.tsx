@@ -13,6 +13,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
 import { useCallback, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Turnstile } from "@/components/Turnstile";
 import posthog from "posthog-js";
 
 type FormData = {
@@ -83,6 +84,8 @@ export const CreateAccountForm: React.FC = () => {
     [login, router, searchParams],
   );
 
+  const [turnstileToken, setTurnstileToken] = useState("");
+
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
       <Message error={error} className="mb-4" />
@@ -137,7 +140,11 @@ export const CreateAccountForm: React.FC = () => {
         </FormItem>
       </div>
 
-      <div className="pt-4 space-y-4">
+      <div className="py-1 flex justify-center">
+        <Turnstile onVerify={(token) => setTurnstileToken(token)} />
+      </div>
+
+      <div className="pt-2 space-y-4">
         <Button
           disabled={loading}
           type="submit"
