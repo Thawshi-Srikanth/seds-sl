@@ -1,0 +1,5 @@
+# React Email build & preview artifacts
+.react-email
+node_modules
+dist
+.next

@@ -1,0 +1,21 @@
+{
+  "name": "transactional",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "email dev -p 3001"
+  },
+  "dependencies": {
+    "@react-email/components": "^1.0.12",
+    "@react-email/tailwind": "^2.0.7",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-email": "^6.9.3"
+  },
+  "devDependencies": {
+    "@react-email/ui": "latest",
+    "@types/react": "^19.0.0",
+    "typescript": "^5.0.0"
+  }
+}
